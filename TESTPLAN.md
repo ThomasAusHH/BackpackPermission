@@ -9,6 +9,7 @@ Erwartete Log-Zeilen:
 
 ```
 Access rule published: 1|0|1|u:<SteamID>,...
+Lobby rule published: 1|1|<HostActor>|1|0|u:<SteamID>=1,...
 Denied <Name> taking an item from <Träger>'s backpack (host check).
 Blocked opening <Träger>'s backpack (local check).
 Blocked stashing into <Träger>'s backpack (local check).
@@ -83,6 +84,23 @@ Blocked stashing into <Träger>'s backpack (local check).
 |---|---|---|
 | 8.1 | C (ohne Mod) trägt einen Rucksack, A und B schauen darauf. | „Open“, alles wie Vanilla. Die Mod darf hier nichts blockieren. |
 | 8.2 | A spielt eine Runde komplett ohne Rucksack-Interaktion. | Keine Fehler in `Player.log`, keine `FieldAccessException`. |
+
+## 9. Host-Modus (A ist Host, B hat die Mod, C optional ohne Mod)
+
+| # | Schritte | Erwartet |
+|---|---|---|
+| 9.1 | A öffnet den eigenen Rucksack. | Oberste Zeile „Lobby mode: Individual“, darunter die gewohnte eigene Liste. |
+| 9.2 | A klickt „Lobby mode“. | Zeile springt auf „Host decides“, Hinweis „Click a player to change their team“, Schalter und Teamliste mit allen Spielern inkl. „A (you)“. Log: `Lobby mode: HostControlled` und `Lobby rule published`. |
+| 9.3 | A klickt B mehrfach. | Status wechselt No team → Team A → B → C → D → No team. Rad bleibt offen. |
+| 9.4 | A und B in Team A, B schaut auf A's Rücken. | „Open“, B kann nehmen und hineinlegen. Ohne dass B etwas freigegeben hat. |
+| 9.5 | B öffnet den eigenen Rucksack. | Panel ist nur Anzeige: „The host manages access in this lobby“, „Your team: Team A“, alle Spieler mit Team, keine Zeile reagiert auf Klick. |
+| 9.6 | A setzt B auf „No team“. | B sieht sofort „Locked“ an A's Rücken. Falls B's Rad offen war, schließt es sich. |
+| 9.7 | B hatte A vorher in seiner eigenen Liste erlaubt; Host-Modus aktiv, verschiedene Teams. | A sieht trotzdem „Locked“ an B's Rücken: eigene Listen sind im Host-Modus inaktiv. |
+| 9.8 | A schaltet zurück auf „Individual“. | B's eigene Liste gilt wieder, A sieht „Open“ an B's Rücken (aus 9.7). |
+| 9.9 | C (ohne Mod) und A in Team A, B in Team B; C versucht bei B zu nehmen. | Item flackert, bleibt drin. Log bei A: `Denied C ... (host check)`. C bei A: erlaubt. |
+| 9.10 | „Allow everyone“ beim Host an. | Alle Rucksäcke offen, unabhängig von Teams. |
+| 9.11 | Neue Runde, gleiche Spieler, A hostet. | Teams stehen wieder wie zuvor (Steam-ID gemerkt). |
+| 9.12 | A verlässt die Runde, B wird Host (ohne die Regel zu ändern). | Panel bei allen zeigt wieder den individuellen Modus; die alte Host-Regel gilt nicht mehr. |
 
 ## Was zu notieren ist
 

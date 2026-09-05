@@ -5,15 +5,17 @@ namespace BackpackPermission.Permissions
     /// <summary>Outcome of an access check, with the reason access was granted.</summary>
     internal enum AccessVerdict
     {
-        /// <summary>The wearer's rule lists the requester or allows everyone.</summary>
+        /// <summary>The wearer's own rule lists the requester or allows everyone.</summary>
         GrantedByRule,
+        /// <summary>The host's team rule puts wearer and requester in the same team, or allows everyone.</summary>
+        GrantedByTeam,
         /// <summary>The requester is the wearer.</summary>
         GrantedSelf,
-        /// <summary>The wearer has not published a rule (no mod installed) so vanilla behaviour applies.</summary>
+        /// <summary>Neither the host nor the wearer published a rule, so vanilla behaviour applies.</summary>
         GrantedNoRule,
         /// <summary>The wearer is dead; the pack drops anyway.</summary>
         GrantedDead,
-        /// <summary>The wearer is passed out and allows access in that state.</summary>
+        /// <summary>The wearer is passed out and the applicable rule unlocks the pack in that state.</summary>
         GrantedPassedOut,
         Denied
     }
@@ -24,9 +26,9 @@ namespace BackpackPermission.Permissions
     }
 
     /// <summary>
-    /// Decides whether a player may access the pack worn by a character. The decision is made
-    /// purely from the wearer's published rule and the wearer's state, so every client and the
-    /// host reach the same result.
+    /// Decides whether a player may access the pack worn by a character. When the host controls
+    /// the lobby, only the host's team rule counts; otherwise the wearer's own published rule
+    /// applies. Every client and the host evaluate the same data and reach the same result.
     /// </summary>
     internal static class AccessPolicy
     {
@@ -52,11 +54,22 @@ namespace BackpackPermission.Permissions
             {
                 return AccessVerdict.GrantedDead;
             }
+            bool passedOut = state != null && (state.passedOut || state.fullyPassedOut);
+
+            if (LobbySync.IsHostControlled(out LobbyRule lobby))
+            {
+                if (lobby.UnlockWhilePassedOut && passedOut)
+                {
+                    return AccessVerdict.GrantedPassedOut;
+                }
+                return lobby.Grants(owner, requester) ? AccessVerdict.GrantedByTeam : AccessVerdict.Denied;
+            }
+
             if (!RuleSync.TryReadRule(owner, out AccessRule rule))
             {
                 return AccessVerdict.GrantedNoRule;
             }
-            if (rule.UnlockWhilePassedOut && state != null && (state.passedOut || state.fullyPassedOut))
+            if (rule.UnlockWhilePassedOut && passedOut)
             {
                 return AccessVerdict.GrantedPassedOut;
             }

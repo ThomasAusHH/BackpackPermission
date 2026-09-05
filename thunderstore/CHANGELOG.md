@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.0
+
+- **Host mode.** The host can switch the lobby to "Host decides" and assign every player to a
+  team (A to D). Team mates may access each other's packs, unassigned players are locked for
+  everyone. Individual permission lists are ignored while host mode is active and come back as
+  soon as the host switches to "Individual".
+- Host-wide switches for "Allow everyone" and "Unlock while passed out".
+- Team assignments are remembered by Steam ID.
+- Non-hosts see a read-only overview of the teams in their panel.
+- The lobby rule expires automatically when the host who set it leaves, so a new host without
+  the mod does not keep stale teams alive.
+
 ## 1.0.0
 
 - Initial release.

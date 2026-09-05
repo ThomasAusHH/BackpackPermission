@@ -17,6 +17,9 @@ put anything in, or light your rocketpack. **Default: nobody is allowed.**
 - **Remembers your friends.** Permissions are stored by Steam ID and apply again next session.
 - **Host-side enforcement.** If the host runs the mod, unauthorized pickups are denied even for
   players who do not have the mod installed.
+- **Host mode.** The host can switch the lobby to *Host decides*, put players into teams A to D
+  and let team mates share packs. Individual lists pause while host mode is on and return when
+  the host switches back. Protects every player in the lobby, even those without the mod.
 - **Vanilla behaviour for everyone else.** Packs of players without the mod stay open, dropped
   packs on the ground stay open, and a dead player's pack drops as usual.
 
@@ -41,6 +44,7 @@ For the full experience every player in the lobby should install the mod.
 `BepInEx/config/com.peakcode.backpackpermission.cfg`
 
 - `UnlockWhilePassedOut` (true), `RememberAllowedPlayers` (true), `Language` (English / Deutsch / Auto)
+- `[Host] LobbyMode` (Individual / HostControlled), host-wide `AllowEveryone` and `UnlockWhilePassedOut`
 - `PanelOffsetX`, `PanelWidth`, `PanelScale` to move or resize the panel
 - `Verbose` for detailed logging
 

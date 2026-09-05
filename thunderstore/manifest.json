@@ -1,6 +1,6 @@
 {
   "name": "BackpackPermission",
-  "version_number": "1.0.0",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/ThomasAusHH/BackpackPermission",
   "description": "Lock your backpack. Choose which players may take items from or stash items into the pack on your back. Default: nobody.",
   "dependencies": [

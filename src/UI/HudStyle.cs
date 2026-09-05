@@ -38,6 +38,19 @@ namespace BackpackPermission.UI
         /// <summary>Cream at reduced opacity for secondary text.</summary>
         public static Color Muted => WithAlpha(Cream, 0.8f);
 
+        /// <summary>Status colour for a team (1..4); unassigned players use <see cref="Muted"/>.</summary>
+        public static Color TeamColor(int team)
+        {
+            switch (team)
+            {
+                case 1: return Green;
+                case 2: return new Color(0.45f, 0.72f, 0.95f, 1f);
+                case 3: return new Color(0.98f, 0.72f, 0.30f, 1f);
+                case 4: return new Color(0.80f, 0.55f, 0.95f, 1f);
+                default: return Muted;
+            }
+        }
+
         /// <summary>Reads font and colours from the wheel and locates the outline sprite once.</summary>
         public static void EnsureCaptured(BackpackWheel wheel)
         {

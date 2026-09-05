@@ -1,5 +1,6 @@
-using BepInEx.Configuration;
 using BackpackPermission.Localization;
+using BackpackPermission.Permissions;
+using BepInEx.Configuration;
 
 namespace BackpackPermission
 {
@@ -16,6 +17,10 @@ namespace BackpackPermission
         private readonly ConfigEntry<float> _panelScale;
         private readonly ConfigEntry<string> _allowedPlayers;
         private readonly ConfigEntry<bool> _allowEveryone;
+        private readonly ConfigEntry<LobbyMode> _lobbyMode;
+        private readonly ConfigEntry<string> _hostTeams;
+        private readonly ConfigEntry<bool> _hostUnlockWhilePassedOut;
+        private readonly ConfigEntry<bool> _hostAllowEveryone;
         private readonly ConfigEntry<bool> _verbose;
 
         public ModConfig(ConfigFile file)
@@ -24,7 +29,7 @@ namespace BackpackPermission
                 "While you are passed out on the ground, everyone may access your backpack (for example to help you). " +
                 "Can also be toggled inside the backpack wheel.");
             _rememberAllowedPlayers = file.Bind("General", "RememberAllowedPlayers", true,
-                "Remember allowed players by their Steam ID so the permission applies again in the next session.");
+                "Remember allowed players and host team assignments by Steam ID so they apply again in the next session.");
             _language = file.Bind("General", "Language", Language.English,
                 "Language of the in-game texts: English (default), Deutsch, or Auto (follows the game language).");
 
@@ -37,6 +42,17 @@ namespace BackpackPermission
                 "Managed by the mod: comma separated keys (u:<UserId>) of allowed players.");
             _allowEveryone = file.Bind("Saved", "AllowEveryone", false,
                 "Managed by the mod: true = everyone may access your backpack.");
+
+            _lobbyMode = file.Bind("Host", "LobbyMode", LobbyMode.Individual,
+                "Applies when you are the host. Individual: every wearer manages their own list. " +
+                "HostControlled: you assign teams, team mates may access each other's packs and individual lists are ignored. " +
+                "Can also be toggled inside the backpack wheel.");
+            _hostTeams = file.Bind("Host", "Teams", "",
+                "Managed by the mod: comma separated team assignments (u:<UserId>=1..4).");
+            _hostUnlockWhilePassedOut = file.Bind("Host", "UnlockWhilePassedOut", true,
+                "Host controlled lobbies: everyone may access the pack of a passed out player.");
+            _hostAllowEveryone = file.Bind("Host", "AllowEveryone", false,
+                "Host controlled lobbies: everyone may access every pack.");
 
             _verbose = file.Bind("Debug", "Verbose", false, "Verbose logging, including a UI hierarchy dump.");
         }
@@ -67,6 +83,30 @@ namespace BackpackPermission
         {
             get => _allowEveryone.Value;
             set => _allowEveryone.Value = value;
+        }
+
+        public LobbyMode LobbyMode
+        {
+            get => _lobbyMode.Value;
+            set => _lobbyMode.Value = value;
+        }
+
+        public string HostTeams
+        {
+            get => _hostTeams.Value;
+            set => _hostTeams.Value = value;
+        }
+
+        public bool HostUnlockWhilePassedOut
+        {
+            get => _hostUnlockWhilePassedOut.Value;
+            set => _hostUnlockWhilePassedOut.Value = value;
+        }
+
+        public bool HostAllowEveryone
+        {
+            get => _hostAllowEveryone.Value;
+            set => _hostAllowEveryone.Value = value;
         }
 
         public bool Verbose => _verbose.Value;

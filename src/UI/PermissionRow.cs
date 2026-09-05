@@ -6,8 +6,9 @@ using UnityEngine.UI;
 namespace BackpackPermission.UI
 {
     /// <summary>
-    /// One clickable row of the access panel. Hovering highlights the row and shows its caption
-    /// in the wheel; a click runs the row's action while the wheel stays open.
+    /// One row of the access panel. Interactive rows highlight on hover, show their caption in
+    /// the wheel and run their action on click while the wheel stays open. Read-only rows only
+    /// display information.
     /// </summary>
     internal sealed class PermissionRow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
@@ -21,6 +22,9 @@ namespace BackpackPermission.UI
         /// <summary>Text shown in the wheel's caption while the row is hovered.</summary>
         public string Caption { get; private set; }
 
+        /// <summary>False for rows that only display information.</summary>
+        public bool Interactive => _onActivate != null;
+
         public void Initialize(PermissionPanel panel, Image fill, string caption, Action onActivate)
         {
             _panel = panel;
@@ -31,7 +35,7 @@ namespace BackpackPermission.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.button == PointerEventData.InputButton.Left)
+            if (Interactive && eventData.button == PointerEventData.InputButton.Left)
             {
                 _panel?.OnRowClicked(this);
             }
@@ -44,6 +48,10 @@ namespace BackpackPermission.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (!Interactive)
+            {
+                return;
+            }
             SetHighlighted(true);
             _panel?.OnRowEntered(this);
         }

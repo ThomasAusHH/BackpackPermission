@@ -27,6 +27,22 @@ bar. Permissions are remembered by Steam ID and apply again in your next session
 
 ![Locked prompt on a teammate's backpack](docs/images/locked-prompt.png)
 
+## Host mode
+
+The host can take over: open your own pack as host and switch **Lobby mode** to *Host decides*.
+
+- Click a player row to move them through **Team A, B, C, D** and back to *No team*.
+- Team mates may access each other's packs. Players without a team are locked for everyone.
+- Host-wide switches for *Allow everyone* and *Unlock while passed out*.
+- While host mode is active, the individual lists of all players are ignored. Everyone else
+  sees a read-only overview of the teams. Switch back to *Individual* and the personal lists
+  apply again.
+- Team assignments are remembered by Steam ID. The rule expires automatically if the host who
+  set it leaves the lobby.
+
+Host mode protects every player in the lobby, including those without the mod, because the
+host evaluates every pickup.
+
 ## Multiplayer
 
 Your rule is published as a Photon player property. Every client, including late joiners,
@@ -63,6 +79,10 @@ app, or manually: copy `BackpackPermission.dll` into `BepInEx/plugins/`. Require
 | UI | PanelScale | 1.0 | Panel scale. |
 | Saved | AllowedPlayers | empty | Managed by the mod. |
 | Saved | AllowEveryone | false | Managed by the mod. |
+| Host | LobbyMode | Individual | Applies when you host: Individual or HostControlled. Toggle in the wheel. |
+| Host | Teams | empty | Managed by the mod: team assignments by Steam ID. |
+| Host | UnlockWhilePassedOut | true | Host mode: everyone may access a passed out player's pack. |
+| Host | AllowEveryone | false | Host mode: everyone may access every pack. |
 | Debug | Verbose | false | Verbose logging including a UI hierarchy dump. |
 
 ## Known limitations
@@ -95,4 +115,4 @@ the Thunderstore zip into `release/`.
 
 ## License
 
-MIT
+GPL-3.0. See [LICENSE](LICENSE).
