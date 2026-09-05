@@ -20,6 +20,7 @@ namespace BackpackPermission
         internal static ModConfig Settings { get; private set; }
         internal static LocalPermissions Permissions { get; private set; }
         internal static HostSettings Host { get; private set; }
+        internal static DroppedPackRegistry DroppedPacks { get; private set; }
 
         private RuleSync _ruleSync;
         private LobbySync _lobbySync;
@@ -31,6 +32,7 @@ namespace BackpackPermission
             Settings = new ModConfig(Config);
             Permissions = new LocalPermissions(Settings);
             Host = new HostSettings(Settings);
+            DroppedPacks = new DroppedPackRegistry();
             _ruleSync = new RuleSync(Permissions);
             _lobbySync = new LobbySync(Host);
 
@@ -44,6 +46,7 @@ namespace BackpackPermission
         {
             _ruleSync.Tick();
             _lobbySync.Tick();
+            DroppedPacks.Tick();
         }
 
         private void OnDestroy()

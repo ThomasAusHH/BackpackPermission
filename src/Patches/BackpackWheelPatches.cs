@@ -1,6 +1,7 @@
 using BackpackPermission.Permissions;
 using BackpackPermission.UI;
 using HarmonyLib;
+using Photon.Pun;
 
 namespace BackpackPermission.Patches
 {
@@ -15,8 +16,7 @@ namespace BackpackPermission.Patches
         [HarmonyPatch(nameof(BackpackWheel.InitWheel))]
         private static void InitWheel_Postfix(BackpackWheel __instance, BackpackReference bp)
         {
-            bool isSomeoneElsesBack = bp.type == BackpackReference.BackpackType.Equipped && !bp.IsOnMyBack();
-            if (isSomeoneElsesBack)
+            if (IsSomeoneElsesPack(bp))
             {
                 PermissionPanel.HideIfOpen();
                 if (!AccessPolicy.LocalPlayerMayAccess(bp))
@@ -26,7 +26,7 @@ namespace BackpackPermission.Patches
                 return;
             }
 
-            // A dropped pack or the local player's own back: this is where permissions are edited.
+            // The local player's own pack, worn or dropped, or a pack nobody owns: permissions are edited here.
             PermissionPanel.ShowFor(__instance);
         }
 
@@ -35,7 +35,7 @@ namespace BackpackPermission.Patches
         private static bool Update_Prefix(BackpackWheel __instance)
         {
             BackpackReference reference = __instance.backpack;
-            if (reference.type == BackpackReference.BackpackType.Equipped && reference.exists && !AccessPolicy.LocalPlayerMayAccess(reference))
+            if (reference.exists && IsSomeoneElsesPack(reference) && !AccessPolicy.LocalPlayerMayAccess(reference))
             {
                 GUIManager.instance.CloseBackpackWheel();
                 return false;
@@ -48,6 +48,20 @@ namespace BackpackPermission.Patches
         private static bool Choose_Prefix(BackpackWheel __instance)
         {
             return !__instance.chosenSlice.IsSome || AccessPolicy.LocalPlayerMayAccess(__instance.chosenSlice.Value.backpackReference);
+        }
+
+        private static bool IsSomeoneElsesPack(BackpackReference reference)
+        {
+            if (reference.view == null)
+            {
+                return false;
+            }
+            if (reference.type == BackpackReference.BackpackType.Equipped)
+            {
+                return !reference.IsOnMyBack();
+            }
+            return AccessPolicy.TryGetDroppedPackOwner(reference.view.ViewID, out Photon.Realtime.Player owner, out _)
+                   && PhotonNetwork.LocalPlayer != null && owner.ActorNumber != PhotonNetwork.LocalPlayer.ActorNumber;
         }
     }
 

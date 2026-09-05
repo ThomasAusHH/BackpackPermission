@@ -9,7 +9,9 @@ Erwartete Log-Zeilen:
 
 ```
 Access rule published: 1|0|1|u:<SteamID>,...
-Lobby rule published: 1|1|<HostActor>|1|0|u:<SteamID>=1,...
+Lobby rule published: 1|1|<HostActor>|1|0|u:<SteamID>=1,...|1|0
+Dropped pack <ViewId> registered: owner actor <n>, cause Manual|Death
+Dropped packs published: <ViewId>:<Actor>:<0|1>,...
 Denied <Name> taking an item from <Träger>'s backpack (host check).
 Blocked opening <Träger>'s backpack (local check).
 Blocked stashing into <Träger>'s backpack (local check).
@@ -101,6 +103,22 @@ Blocked stashing into <Träger>'s backpack (local check).
 | 9.10 | „Allow everyone“ beim Host an. | Alle Rucksäcke offen, unabhängig von Teams. |
 | 9.11 | Neue Runde, gleiche Spieler, A hostet. | Teams stehen wieder wie zuvor (Steam-ID gemerkt). |
 | 9.12 | A verlässt die Runde, B wird Host (ohne die Regel zu ändern). | Panel bei allen zeigt wieder den individuellen Modus; die alte Host-Regel gilt nicht mehr. |
+
+## 10. Abgelegte Rucksäcke und Tod (A und B haben die Mod, A ist Host)
+
+| # | Schritte | Erwartet |
+|---|---|---|
+| 10.1 | A hat B gesperrt, „Dropped pack: My list“. A legt den Rucksack ab, B schaut ihn an. | Prompt „Locked“ statt „Open“, Rad öffnet sich nicht. Log bei A: `Dropped pack <id> registered: ... cause Manual` und `Dropped packs published`. |
+| 10.2 | B versucht den abgelegten Rucksack aufzusetzen (Wear-Segment ist nicht erreichbar, weil das Rad nicht aufgeht). C ohne Mod versucht es. | Bei C flackert der Rucksack kurz und bleibt liegen. Log bei A: `Denied C taking from a dropped pack (wearing it)`. |
+| 10.3 | A setzt den Rucksack selbst wieder auf. | Funktioniert. Log bei A nach kurzer Zeit: `Dropped packs published: (none)`. |
+| 10.4 | A schaltet „Dropped pack: Everyone“, legt ab. | B sieht „Open“, kann öffnen, nehmen, hineinlegen und aufsetzen. |
+| 10.5 | „After death: Everyone“ (Standard). A stirbt, Rucksack fällt. | B kann ihn wie Vanilla öffnen. Log: `cause Death`. |
+| 10.6 | „After death: My list“, B gesperrt. A stirbt. | B sieht „Locked“ am gefallenen Rucksack. Nach Freigabe von B (A muss dafür wiederbelebt sein oder vorher freigeben): „Open“. |
+| 10.7 | A hostet, Host-Modus, A und B in verschiedenen Teams, „Dropped pack: Team only“. B legt ab. | A sieht „Locked“. Team-Kamerad von B sieht „Open“. |
+| 10.8 | Host-Modus, „After death: Team only“, B stirbt. | Nur B's Team darf an den gefallenen Rucksack. |
+| 10.9 | B (kein Host) legt ab, verlässt die Runde. | Der Rucksack ist für alle offen (Besitzer weg). |
+| 10.10 | Rucksack aus einem Koffer, den noch niemand getragen hat. | Für alle offen, Panel zeigt beim Öffnen die eigene Liste. |
+| 10.11 | B öffnet A's abgelegten, aber freigegebenen Rucksack. | Kein Panel bei B (fremder Rucksack), Rad funktioniert normal. |
 
 ## Was zu notieren ist
 

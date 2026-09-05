@@ -21,6 +21,8 @@ Extra rows in the panel:
 |---|---|
 | Allow everyone | Everyone may access your pack. Individual permissions are kept. |
 | Unlock while passed out | While you are passed out, everyone may access your pack so they can help you. On by default. |
+| Dropped pack | *My list*: your permissions keep applying after you put the pack down. *Everyone*: anyone may open it. Default: My list. |
+| After death | *My list*: your permissions keep applying to the pack you dropped when you died. *Everyone*: anyone may loot it, as in the base game. Default: Everyone. |
 
 Locked players see **Locked** instead of *Open* when looking at your back and get no hold
 bar. Permissions are remembered by Steam ID and apply again in your next session.
@@ -34,6 +36,8 @@ The host can take over: open your own pack as host and switch **Lobby mode** to 
 - Click a player row to move them through **Team A, B, C, D** and back to *No team*.
 - Team mates may access each other's packs. Players without a team are locked for everyone.
 - Host-wide switches for *Allow everyone* and *Unlock while passed out*.
+- *Dropped pack* and *After death* decide whether packs on the ground stay **Team only** or are
+  open to **Everyone**. Defaults: dropped packs team only, death drops open.
 - While host mode is active, the individual lists of all players are ignored. Everyone else
   sees a read-only overview of the teams. Switch back to *Individual* and the personal lists
   apply again.
@@ -55,9 +59,10 @@ knows it immediately. No custom RPCs, no extra network traffic.
 | You and the host | Taking items is blocked reliably: the host denies the pickup. Stashing and lighting by players without the mod cannot be blocked. |
 | Everyone | Full protection: no taking, no stashing, no lighting. |
 
-Players without the mod behave like vanilla towards you: their packs stay open. Dropped
-backpacks on the ground are open to everyone, as in the base game. Only the pack on your
-back is protected. When you die the pack drops anyway.
+Players without the mod behave like vanilla towards you: their packs stay open. The host keeps
+track of who dropped which pack and why, so the *Dropped pack* and *After death* rules also
+work for players without the mod as long as the host has it. Packs that nobody wore, for
+example straight out of a luggage, are open to everyone.
 
 ## Installation
 
@@ -72,6 +77,8 @@ app, or manually: copy `BackpackPermission.dll` into `BepInEx/plugins/`. Require
 | Section | Key | Default | Meaning |
 |---|---|---|---|
 | General | UnlockWhilePassedOut | true | Everyone may access your pack while you are passed out. |
+| General | ProtectDroppedPack | true | Your list keeps applying to a pack you put down. |
+| General | ProtectPackAfterDeath | false | Your list keeps applying to a pack you dropped on death. |
 | General | RememberAllowedPlayers | true | Remember allowed players by Steam ID across sessions. |
 | General | Language | English | English, Deutsch, or Auto (follows the game language). |
 | UI | PanelOffsetX | 340 | Distance of the panel from the wheel center. |
@@ -83,6 +90,8 @@ app, or manually: copy `BackpackPermission.dll` into `BepInEx/plugins/`. Require
 | Host | Teams | empty | Managed by the mod: team assignments by Steam ID. |
 | Host | UnlockWhilePassedOut | true | Host mode: everyone may access a passed out player's pack. |
 | Host | AllowEveryone | false | Host mode: everyone may access every pack. |
+| Host | DroppedPacksTeamOnly | true | Host mode: packs put down stay restricted to the owner's team. |
+| Host | DeathDropsTeamOnly | false | Host mode: packs dropped on death stay restricted to the owner's team. |
 | Debug | Verbose | false | Verbose logging including a UI hierarchy dump. |
 
 ## Known limitations

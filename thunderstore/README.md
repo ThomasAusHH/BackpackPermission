@@ -20,6 +20,9 @@ put anything in, or light your rocketpack. **Default: nobody is allowed.**
 - **Host mode.** The host can switch the lobby to *Host decides*, put players into teams A to D
   and let team mates share packs. Individual lists pause while host mode is on and return when
   the host switches back. Protects every player in the lobby, even those without the mod.
+- **Dropped packs.** Decide what happens to a pack on the ground: *Dropped pack* (you put it
+  down) and *After death* can each stay restricted to your list or your team, or be open to
+  everyone. Default: what you put down stays yours, what you drop on death can be rescued.
 - **Vanilla behaviour for everyone else.** Packs of players without the mod stay open, dropped
   packs on the ground stay open, and a dead player's pack drops as usual.
 
@@ -43,8 +46,8 @@ For the full experience every player in the lobby should install the mod.
 
 `BepInEx/config/com.peakcode.backpackpermission.cfg`
 
-- `UnlockWhilePassedOut` (true), `RememberAllowedPlayers` (true), `Language` (English / Deutsch / Auto)
-- `[Host] LobbyMode` (Individual / HostControlled), host-wide `AllowEveryone` and `UnlockWhilePassedOut`
+- `UnlockWhilePassedOut` (true), `ProtectDroppedPack` (true), `ProtectPackAfterDeath` (false), `RememberAllowedPlayers` (true), `Language` (English / Deutsch / Auto)
+- `[Host] LobbyMode` (Individual / HostControlled), host-wide `AllowEveryone`, `UnlockWhilePassedOut`, `DroppedPacksTeamOnly`, `DeathDropsTeamOnly`
 - `PanelOffsetX`, `PanelWidth`, `PanelScale` to move or resize the panel
 - `Verbose` for detailed logging
 

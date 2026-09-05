@@ -23,10 +23,13 @@ dürfen. Standard: niemand. Details zur Bedienung und zum Multiplayer-Verhalten 
 | `src/Permissions/LobbyRule.cs` | Unveränderliche Host-Regel (`LobbyMode`, Teams 1..4, Host-ActorNumber), Wire-Format `1|mode|hostActor|ohnmacht|alle|key=team,...` |
 | `src/Permissions/HostSettings.cs` | Host-Einstellungen des lokalen Spielers (Modus, Teams, Schalter), Persistenz über `ModConfig` Sektion `Host`, Event `Changed` |
 | `src/Permissions/LobbySync.cs` | Veröffentlicht die Host-Regel als **Raum**-Property `bpk_lobby` (nur als Master), liest sie überall; Regel gilt nur, solange ihr Host noch Master ist |
+| `src/Permissions/DroppedPackRegistry.cs` | Host-autoritative Zuordnung Bodenrucksack (ViewID) → letzter Träger (ActorNumber) + `DropCause`; Raum-Property `bpk_drops`; Host liest lokal (Property hinkt einen Roundtrip), andere die Property |
 | `src/Permissions/AccessPolicy.cs` | `Evaluate(wearer, requester)` liefert `AccessVerdict` mit Begründung. Reihenfolge: Self → Dead → Host-Regel (wenn HostControlled, Trägerregel ignoriert) → Trägerregel → ohne Regel gewährt |
 | `src/Patches/BackpackOnBackVisualsPatches.cs` | Prompt „Locked“, kein Haltebalken, kein `Interact_CastFinished` |
 | `src/Patches/BackpackWheelPatches.cs` | Panel ein-/ausblenden, Rad schließen bei Entzug; `GuiManagerPatches` für `CloseBackpackWheel` |
-| `src/Patches/ItemPickupPatches.cs` | Host-seitig `Item.RequestPickup` ablehnen (`DenyPickupRPC`) |
+| `src/Patches/ItemPickupPatches.cs` | Host-seitig `Item.RequestPickup` ablehnen (`DenyPickupRPC`): Items im getragenen Pack, Items im Bodenpack, Aufsetzen eines geschützten Bodenpacks |
+| `src/Patches/DropTrackingPatches.cs` | Master: `CharacterItems.DropItemRpc` (manuell) und `DropItemFromSlotRPC` (Tod/Wiederbelebung) mit Slot 3 → Registry; `SpawnTracker` merkt sich das zuletzt per `PhotonNetwork.InstantiateItemRoom` erzeugte Objekt |
+| `src/Patches/BackpackItemPatches.cs` | Bodenrucksack (`Backpack`): Prompt „Locked“, `Interact` und `Stash` client-seitig blocken |
 | `src/Patches/BackpackStashPatches.cs` | Client-seitig `StashInBackpack` blocken |
 | `src/UI/PermissionPanel.cs` | MonoBehaviour unter `BackpackWheel.transform`, drei Ansichten: eigene Liste, Host-Team-Editor, Team-Übersicht (read-only); `Instance`, `HoveredRow`, `ShowFor`/`HideIfOpen` |
 | `src/UI/PermissionRow.cs` | Klickbare Zeile (Pointer-Events, Highlight, Caption im Radtext). Klick ist sicher: bei offenem Rad ist `CanDoInput()` false und `CharacterInput` liest keine Item-Eingaben |
@@ -77,6 +80,9 @@ Release: Version in `src/Plugin.cs` (`Version`), `src/BackpackPermission.csproj`
   Deshalb erscheint das Panel bei jedem Rad mit Typ `Item` (oder `IsOnMyBack()`).
 - Beim Tod fällt der Rucksack zu Boden (`DropAllItems(includeBackpack: true)`), bei Ohnmacht
   bleibt er am Rücken. Daher gibt es die Option „Freigabe bei Ohnmacht“.
+- Beide Drop-Wege (`DropItemRpc` manuell, `DropItemFromSlotRPC` bei Tod/Wiederbelebung) laufen auf allen Clients,
+  aber nur der Master erzeugt das Bodenitem (`PhotonNetwork.InstantiateItemRoom`, definiert in der PUN-DLL des Spiels).
+  Deshalb kann nur der Host Bodenrucksack und Besitzer zusammenbringen.
 - Spieleridentität: `Photon.Realtime.Player.UserId` (Steam-ID), Fallback `ActorNumber`.
 - Raum-Properties (`PhotonNetwork.CurrentRoom.SetCustomProperties`) überleben einen Master-Wechsel. Deshalb trägt
   die Host-Regel die ActorNumber ihres Hosts und wird ignoriert, sobald ein anderer Spieler Master ist.

@@ -7,6 +7,12 @@
   everyone. Individual permission lists are ignored while host mode is active and come back as
   soon as the host switches to "Individual".
 - Host-wide switches for "Allow everyone" and "Unlock while passed out".
+- **Dropped packs.** New rules for packs lying on the ground: "Dropped pack" (put down by the
+  wearer) and "After death". Individually: *My list* or *Everyone*. In host mode: *Team only* or
+  *Everyone*. Defaults keep a pack you put down protected and leave death drops open, so a run
+  can still be rescued.
+- The host tracks who dropped which pack and why, and shares it with the lobby. Protected packs
+  on the ground show "Locked", cannot be opened, stashed into or picked up by locked players.
 - Team assignments are remembered by Steam ID.
 - Non-hosts see a read-only overview of the teams in their panel.
 - The lobby rule expires automatically when the host who set it leaves, so a new host without

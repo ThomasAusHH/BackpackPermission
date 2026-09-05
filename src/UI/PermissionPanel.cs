@@ -192,8 +192,16 @@ namespace BackpackPermission.UI
                 y -= AddRow(Strings.LobbyMode, Strings.ModeIndividual, HudStyle.Muted, null, null, y) + RowGap;
             }
 
+            return BuildIndividualRows(y, permissions);
+        }
+
+        /// <summary>Switches, dropped-pack rules and the player list of the individual view.</summary>
+        private float BuildIndividualRows(float y, LocalPermissions permissions)
+        {
             y -= AddSwitchRow(Strings.AllowEveryone, permissions.AllowEveryone, permissions.ToggleAllowEveryone, y) + RowGap;
-            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, permissions.UnlockWhilePassedOut, permissions.ToggleUnlockWhilePassedOut, y) + SectionGap;
+            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, permissions.UnlockWhilePassedOut, permissions.ToggleUnlockWhilePassedOut, y) + RowGap;
+            y -= AddChoiceRow(Strings.DroppedPack, permissions.ProtectDroppedPack, Strings.MyList, Strings.Everyone, permissions.ToggleProtectDroppedPack, y) + RowGap;
+            y -= AddChoiceRow(Strings.AfterDeath, permissions.ProtectDeathDrop, Strings.MyList, Strings.Everyone, permissions.ToggleProtectDeathDrop, y) + SectionGap;
 
             y -= AddLabel(Strings.Players, 22f, y, 1f) + 8f;
 
@@ -223,25 +231,13 @@ namespace BackpackPermission.UI
             if (!hostControlled)
             {
                 // The host's own pack follows the individual rules like everyone else's.
-                LocalPermissions permissions = Plugin.Permissions;
-                y -= AddSwitchRow(Strings.AllowEveryone, permissions.AllowEveryone, permissions.ToggleAllowEveryone, y) + RowGap;
-                y -= AddSwitchRow(Strings.UnlockWhilePassedOut, permissions.UnlockWhilePassedOut, permissions.ToggleUnlockWhilePassedOut, y) + SectionGap;
-                y -= AddLabel(Strings.Players, 22f, y, 1f) + 8f;
-
-                List<Photon.Realtime.Player> others = OtherPlayers();
-                if (others.Count == 0)
-                {
-                    return y - AddLabel(Strings.NoOtherPlayers, 17f, y, 0.75f);
-                }
-                foreach (Photon.Realtime.Player player in others)
-                {
-                    y -= AddPlayerPermissionRow(player, permissions, y) + RowGap;
-                }
-                return y - AddLabel(Strings.Summary(permissions.CountGranted(others), others.Count), 16f, y, 0.75f);
+                return BuildIndividualRows(y, Plugin.Permissions);
             }
 
             y -= AddSwitchRow(Strings.AllowEveryone, host.AllowEveryone, host.ToggleAllowEveryone, y) + RowGap;
-            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, host.UnlockWhilePassedOut, host.ToggleUnlockWhilePassedOut, y) + SectionGap;
+            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, host.UnlockWhilePassedOut, host.ToggleUnlockWhilePassedOut, y) + RowGap;
+            y -= AddChoiceRow(Strings.DroppedPack, host.DroppedPacksTeamOnly, Strings.TeamOnly, Strings.Everyone, host.ToggleDroppedPacksTeamOnly, y) + RowGap;
+            y -= AddChoiceRow(Strings.AfterDeath, host.DeathDropsTeamOnly, Strings.TeamOnly, Strings.Everyone, host.ToggleDeathDropsTeamOnly, y) + SectionGap;
             y -= AddLabel(Strings.Teams, 22f, y, 1f) + 8f;
 
             foreach (Photon.Realtime.Player player in AllPlayers())
@@ -261,7 +257,9 @@ namespace BackpackPermission.UI
             y -= AddLabel(Strings.HostManagesHint, 16f, y, 0.75f) + 14f;
             y -= AddRow(Strings.LobbyMode, Strings.ModeHost, HudStyle.Green, null, null, y) + RowGap;
             y -= AddRow(Strings.AllowEveryone, lobby.AllowEveryone ? Strings.On : Strings.Off, lobby.AllowEveryone ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
-            y -= AddRow(Strings.UnlockWhilePassedOut, lobby.UnlockWhilePassedOut ? Strings.On : Strings.Off, lobby.UnlockWhilePassedOut ? HudStyle.Green : HudStyle.Muted, null, null, y) + SectionGap;
+            y -= AddRow(Strings.UnlockWhilePassedOut, lobby.UnlockWhilePassedOut ? Strings.On : Strings.Off, lobby.UnlockWhilePassedOut ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
+            y -= AddRow(Strings.DroppedPack, lobby.DroppedPacksTeamOnly ? Strings.TeamOnly : Strings.Everyone, lobby.DroppedPacksTeamOnly ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
+            y -= AddRow(Strings.AfterDeath, lobby.DeathDropsTeamOnly ? Strings.TeamOnly : Strings.Everyone, lobby.DeathDropsTeamOnly ? HudStyle.Green : HudStyle.Muted, null, null, y) + SectionGap;
 
             y -= AddLabel(Strings.YourTeam(LobbyRule.TeamName(lobby.TeamOf(PhotonNetwork.LocalPlayer))), 22f, y, 1f) + 8f;
 
@@ -277,6 +275,14 @@ namespace BackpackPermission.UI
         {
             return AddRow(label, isOn ? Strings.On : Strings.Off, isOn ? HudStyle.Green : HudStyle.Muted,
                 Strings.Toggle(label, !isOn), toggle, y);
+        }
+
+        /// <summary>A two-state row whose status reads as a choice ("Team only" / "Everyone") rather than On/Off.</summary>
+        private float AddChoiceRow(string label, bool restricted, string restrictedText, string openText, Action toggle, float y)
+        {
+            string status = restricted ? restrictedText : openText;
+            string next = restricted ? openText : restrictedText;
+            return AddRow(label, status, restricted ? HudStyle.Green : HudStyle.Muted, Strings.SetTo(label, next), toggle, y);
         }
 
         private float AddPlayerPermissionRow(Photon.Realtime.Player player, LocalPermissions permissions, float y)

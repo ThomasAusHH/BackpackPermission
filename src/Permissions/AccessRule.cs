@@ -6,8 +6,9 @@ namespace BackpackPermission.Permissions
 {
     /// <summary>
     /// The access rule a wearer publishes to the lobby. Immutable.
-    /// Wire format: <c>1|&lt;everyone&gt;|&lt;passedOut&gt;|&lt;key,key,...&gt;</c> with
-    /// <c>1</c>/<c>0</c> for the flags and <see cref="PlayerKey"/> values for the list.
+    /// Wire format: <c>1|&lt;everyone&gt;|&lt;passedOut&gt;|&lt;key,key,...&gt;|&lt;protectDropped&gt;|&lt;protectDeath&gt;</c>
+    /// with <c>1</c>/<c>0</c> for the flags and <see cref="PlayerKey"/> values for the list. The two
+    /// trailing flags were added in 1.1 and are optional when parsing.
     /// </summary>
     internal sealed class AccessRule
     {
@@ -18,10 +19,13 @@ namespace BackpackPermission.Permissions
 
         private readonly HashSet<PlayerKey> _allowedPlayers;
 
-        public AccessRule(bool allowEveryone, bool unlockWhilePassedOut, IEnumerable<PlayerKey> allowedPlayers)
+        public AccessRule(bool allowEveryone, bool unlockWhilePassedOut, IEnumerable<PlayerKey> allowedPlayers,
+            bool protectDroppedPack = true, bool protectDeathDrop = false)
         {
             AllowEveryone = allowEveryone;
             UnlockWhilePassedOut = unlockWhilePassedOut;
+            ProtectDroppedPack = protectDroppedPack;
+            ProtectDeathDrop = protectDeathDrop;
             _allowedPlayers = new HashSet<PlayerKey>(allowedPlayers ?? Enumerable.Empty<PlayerKey>());
         }
 
@@ -29,7 +33,16 @@ namespace BackpackPermission.Permissions
 
         public bool UnlockWhilePassedOut { get; }
 
+        /// <summary>Whether the list also applies to the pack after the wearer put it down.</summary>
+        public bool ProtectDroppedPack { get; }
+
+        /// <summary>Whether the list also applies to the pack after the wearer died.</summary>
+        public bool ProtectDeathDrop { get; }
+
         public IReadOnlyCollection<PlayerKey> AllowedPlayers => _allowedPlayers;
+
+        /// <summary>Whether the pack stays protected after dropping for the given reason.</summary>
+        public bool Protects(DropCause cause) => cause == DropCause.Death ? ProtectDeathDrop : ProtectDroppedPack;
 
         /// <summary>
         /// Whether the rule grants access to <paramref name="requester"/> on its own, ignoring the
@@ -52,7 +65,8 @@ namespace BackpackPermission.Permissions
         public string Serialize()
         {
             string keys = string.Join(KeySeparator.ToString(), _allowedPlayers.Select(k => k.Value));
-            return string.Join(FieldSeparator.ToString(), FormatVersion.ToString(), Flag(AllowEveryone), Flag(UnlockWhilePassedOut), keys);
+            return string.Join(FieldSeparator.ToString(), FormatVersion.ToString(), Flag(AllowEveryone), Flag(UnlockWhilePassedOut), keys,
+                Flag(ProtectDroppedPack), Flag(ProtectDeathDrop));
         }
 
         public static bool TryParse(string raw, out AccessRule rule)
@@ -78,7 +92,10 @@ namespace BackpackPermission.Permissions
                 }
             }
 
-            rule = new AccessRule(fields[1] == "1", fields[2] == "1", keys);
+            // 1.0 clients publish four fields; their dropped packs behave like the 1.0 game did: open.
+            bool protectDropped = fields.Length > 4 && fields[4] == "1";
+            bool protectDeath = fields.Length > 5 && fields[5] == "1";
+            rule = new AccessRule(fields[1] == "1", fields[2] == "1", keys, protectDropped, protectDeath);
             return true;
         }
 

@@ -56,6 +56,40 @@ namespace BackpackPermission.Permissions
             }
         }
 
+        /// <summary>Whether a pack a player put down stays restricted to that player's team.</summary>
+        public bool DroppedPacksTeamOnly
+        {
+            get => _config.HostDroppedPacksTeamOnly;
+            private set
+            {
+                _config.HostDroppedPacksTeamOnly = value;
+                Changed?.Invoke();
+            }
+        }
+
+        /// <summary>Whether a pack dropped on death stays restricted to that player's team.</summary>
+        public bool DeathDropsTeamOnly
+        {
+            get => _config.HostDeathDropsTeamOnly;
+            private set
+            {
+                _config.HostDeathDropsTeamOnly = value;
+                Changed?.Invoke();
+            }
+        }
+
+        public void ToggleDroppedPacksTeamOnly()
+        {
+            DroppedPacksTeamOnly = !DroppedPacksTeamOnly;
+            Plugin.Log.LogInfo($"Host: dropped packs {(DroppedPacksTeamOnly ? "team only" : "open to everyone")}");
+        }
+
+        public void ToggleDeathDropsTeamOnly()
+        {
+            DeathDropsTeamOnly = !DeathDropsTeamOnly;
+            Plugin.Log.LogInfo($"Host: packs dropped on death {(DeathDropsTeamOnly ? "team only" : "open to everyone")}");
+        }
+
         public int TeamOf(Photon.Realtime.Player player)
         {
             return PlayerKey.TryFrom(player, out PlayerKey key) && _teams.TryGetValue(key, out int team) ? team : LobbyRule.NoTeam;
@@ -104,7 +138,7 @@ namespace BackpackPermission.Permissions
 
         public LobbyRule ToRule(int hostActorNumber)
         {
-            return new LobbyRule(Mode, hostActorNumber, UnlockWhilePassedOut, AllowEveryone, _teams);
+            return new LobbyRule(Mode, hostActorNumber, UnlockWhilePassedOut, AllowEveryone, _teams, DroppedPacksTeamOnly, DeathDropsTeamOnly);
         }
 
         private void Load()

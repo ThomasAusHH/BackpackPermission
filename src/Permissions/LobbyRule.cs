@@ -15,7 +15,8 @@ namespace BackpackPermission.Permissions
 
     /// <summary>
     /// The lobby-wide rule the host publishes as a room property. Immutable.
-    /// Wire format: <c>1|&lt;mode&gt;|&lt;hostActor&gt;|&lt;passedOut&gt;|&lt;everyone&gt;|&lt;key=team,...&gt;</c>.
+    /// Wire format:
+    /// <c>1|&lt;mode&gt;|&lt;hostActor&gt;|&lt;passedOut&gt;|&lt;everyone&gt;|&lt;key=team,...&gt;|&lt;droppedTeamOnly&gt;|&lt;deathTeamOnly&gt;</c>.
     /// The host actor number lets clients detect a stale rule after the host left.
     /// </summary>
     internal sealed class LobbyRule
@@ -32,12 +33,15 @@ namespace BackpackPermission.Permissions
 
         private readonly Dictionary<PlayerKey, int> _teams;
 
-        public LobbyRule(LobbyMode mode, int hostActorNumber, bool unlockWhilePassedOut, bool allowEveryone, IEnumerable<KeyValuePair<PlayerKey, int>> teams)
+        public LobbyRule(LobbyMode mode, int hostActorNumber, bool unlockWhilePassedOut, bool allowEveryone,
+            IEnumerable<KeyValuePair<PlayerKey, int>> teams, bool droppedPacksTeamOnly, bool deathDropsTeamOnly)
         {
             Mode = mode;
             HostActorNumber = hostActorNumber;
             UnlockWhilePassedOut = unlockWhilePassedOut;
             AllowEveryone = allowEveryone;
+            DroppedPacksTeamOnly = droppedPacksTeamOnly;
+            DeathDropsTeamOnly = deathDropsTeamOnly;
             _teams = new Dictionary<PlayerKey, int>();
             foreach (KeyValuePair<PlayerKey, int> entry in teams ?? Enumerable.Empty<KeyValuePair<PlayerKey, int>>())
             {
@@ -56,7 +60,16 @@ namespace BackpackPermission.Permissions
 
         public bool AllowEveryone { get; }
 
+        /// <summary>Whether a pack a player put down stays restricted to the player's team.</summary>
+        public bool DroppedPacksTeamOnly { get; }
+
+        /// <summary>Whether a pack dropped on death stays restricted to the player's team.</summary>
+        public bool DeathDropsTeamOnly { get; }
+
         public IReadOnlyDictionary<PlayerKey, int> Teams => _teams;
+
+        /// <summary>Whether packs dropped for the given reason stay team restricted.</summary>
+        public bool Protects(DropCause cause) => cause == DropCause.Death ? DeathDropsTeamOnly : DroppedPacksTeamOnly;
 
         public int TeamOf(Photon.Realtime.Player player)
         {
@@ -91,7 +104,7 @@ namespace BackpackPermission.Permissions
         {
             string teams = string.Join(EntrySeparator.ToString(), _teams.Select(t => t.Key.Value + AssignmentSeparator + t.Value));
             return string.Join(FieldSeparator.ToString(), FormatVersion.ToString(), ((int)Mode).ToString(), HostActorNumber.ToString(),
-                Flag(UnlockWhilePassedOut), Flag(AllowEveryone), teams);
+                Flag(UnlockWhilePassedOut), Flag(AllowEveryone), teams, Flag(DroppedPacksTeamOnly), Flag(DeathDropsTeamOnly));
         }
 
         public static bool TryParse(string raw, out LobbyRule rule)
@@ -103,7 +116,7 @@ namespace BackpackPermission.Permissions
             }
 
             string[] fields = raw.Split(FieldSeparator);
-            if (fields.Length < 6 || fields[0] != FormatVersion.ToString()
+            if (fields.Length < 8 || fields[0] != FormatVersion.ToString()
                 || !int.TryParse(fields[1], out int mode) || !Enum.IsDefined(typeof(LobbyMode), mode)
                 || !int.TryParse(fields[2], out int hostActor))
             {
@@ -121,7 +134,7 @@ namespace BackpackPermission.Permissions
                 }
             }
 
-            rule = new LobbyRule((LobbyMode)mode, hostActor, fields[3] == "1", fields[4] == "1", teams);
+            rule = new LobbyRule((LobbyMode)mode, hostActor, fields[3] == "1", fields[4] == "1", teams, fields[6] == "1", fields[7] == "1");
             return true;
         }
 

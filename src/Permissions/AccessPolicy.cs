@@ -17,6 +17,8 @@ namespace BackpackPermission.Permissions
         GrantedDead,
         /// <summary>The wearer is passed out and the applicable rule unlocks the pack in that state.</summary>
         GrantedPassedOut,
+        /// <summary>The pack lies on the ground and the applicable rule does not protect dropped packs.</summary>
+        GrantedUnprotectedDrop,
         Denied
     }
 
@@ -26,12 +28,14 @@ namespace BackpackPermission.Permissions
     }
 
     /// <summary>
-    /// Decides whether a player may access the pack worn by a character. When the host controls
-    /// the lobby, only the host's team rule counts; otherwise the wearer's own published rule
-    /// applies. Every client and the host evaluate the same data and reach the same result.
+    /// Decides whether a player may access a pack, either worn by a character or lying on the
+    /// ground. When the host controls the lobby, only the host's team rule counts; otherwise the
+    /// wearer's own published rule applies. Every client and the host evaluate the same data and
+    /// reach the same result.
     /// </summary>
     internal static class AccessPolicy
     {
+        /// <summary>Access to the pack currently worn by <paramref name="wearer"/>.</summary>
         public static AccessVerdict Evaluate(Character wearer, Photon.Realtime.Player requester)
         {
             if (wearer == null || requester == null || wearer.isBot)
@@ -76,6 +80,50 @@ namespace BackpackPermission.Permissions
             return rule.Grants(requester) ? AccessVerdict.GrantedByRule : AccessVerdict.Denied;
         }
 
+        /// <summary>Access to a pack on the ground, identified by the PhotonView id of the pack item.</summary>
+        public static AccessVerdict EvaluateDropped(int packViewId, Photon.Realtime.Player requester)
+        {
+            if (requester == null || !TryGetDroppedPackOwner(packViewId, out Photon.Realtime.Player owner, out DropCause cause))
+            {
+                return AccessVerdict.GrantedNoRule;
+            }
+            if (owner.ActorNumber == requester.ActorNumber)
+            {
+                return AccessVerdict.GrantedSelf;
+            }
+
+            if (LobbySync.IsHostControlled(out LobbyRule lobby))
+            {
+                if (!lobby.Protects(cause))
+                {
+                    return AccessVerdict.GrantedUnprotectedDrop;
+                }
+                return lobby.Grants(owner, requester) ? AccessVerdict.GrantedByTeam : AccessVerdict.Denied;
+            }
+
+            if (!RuleSync.TryReadRule(owner, out AccessRule rule))
+            {
+                return AccessVerdict.GrantedNoRule;
+            }
+            if (!rule.Protects(cause))
+            {
+                return AccessVerdict.GrantedUnprotectedDrop;
+            }
+            return rule.Grants(requester) ? AccessVerdict.GrantedByRule : AccessVerdict.Denied;
+        }
+
+        /// <summary>The last wearer of a pack on the ground, if known and still in the room.</summary>
+        public static bool TryGetDroppedPackOwner(int packViewId, out Photon.Realtime.Player owner, out DropCause cause)
+        {
+            owner = null;
+            if (!DroppedPackRegistry.TryGet(packViewId, out int ownerActor, out cause))
+            {
+                return false;
+            }
+            owner = PhotonNetwork.CurrentRoom?.GetPlayer(ownerActor);
+            return owner != null;
+        }
+
         public static bool IsAllowed(Character wearer, Photon.Realtime.Player requester)
         {
             return Evaluate(wearer, requester).IsGranted();
@@ -87,15 +135,16 @@ namespace BackpackPermission.Permissions
             return IsAllowed(wearer, PhotonNetwork.LocalPlayer);
         }
 
-        /// <summary>
-        /// Whether the local player may access the pack behind a wheel reference. Packs lying on
-        /// the ground are always accessible, as in the base game.
-        /// </summary>
+        /// <summary>Whether the local player may access the pack behind a wheel reference, worn or on the ground.</summary>
         public static bool LocalPlayerMayAccess(BackpackReference reference)
         {
-            if (reference.type != BackpackReference.BackpackType.Equipped || reference.view == null)
+            if (reference.view == null)
             {
                 return true;
+            }
+            if (reference.type == BackpackReference.BackpackType.Item)
+            {
+                return EvaluateDropped(reference.view.ViewID, PhotonNetwork.LocalPlayer).IsGranted();
             }
             Character wearer = reference.view.GetComponent<Character>();
             return wearer == null || wearer.IsLocal || LocalPlayerMayAccess(wearer);
@@ -105,6 +154,13 @@ namespace BackpackPermission.Permissions
         public static bool IsLockedForLocalPlayer(Character wearer)
         {
             return wearer != null && !wearer.IsLocal && !LocalPlayerMayAccess(wearer);
+        }
+
+        /// <summary>True when a pack lying on the ground is locked for the local player.</summary>
+        public static bool IsDroppedPackLockedForLocalPlayer(Backpack pack)
+        {
+            return pack != null && pack.itemState == ItemState.Ground && pack.photonView != null
+                   && !EvaluateDropped(pack.photonView.ViewID, PhotonNetwork.LocalPlayer).IsGranted();
         }
     }
 }

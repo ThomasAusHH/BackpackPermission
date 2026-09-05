@@ -45,6 +45,40 @@ namespace BackpackPermission.Permissions
             }
         }
 
+        /// <summary>Whether the list keeps protecting the pack after the local player put it down.</summary>
+        public bool ProtectDroppedPack
+        {
+            get => _config.ProtectDroppedPack;
+            private set
+            {
+                _config.ProtectDroppedPack = value;
+                Changed?.Invoke();
+            }
+        }
+
+        /// <summary>Whether the list keeps protecting the pack after the local player died.</summary>
+        public bool ProtectDeathDrop
+        {
+            get => _config.ProtectDeathDrop;
+            private set
+            {
+                _config.ProtectDeathDrop = value;
+                Changed?.Invoke();
+            }
+        }
+
+        public void ToggleProtectDroppedPack()
+        {
+            ProtectDroppedPack = !ProtectDroppedPack;
+            Plugin.Log.LogInfo($"Protect dropped pack: {(ProtectDroppedPack ? "on" : "off")}");
+        }
+
+        public void ToggleProtectDeathDrop()
+        {
+            ProtectDeathDrop = !ProtectDeathDrop;
+            Plugin.Log.LogInfo($"Protect pack after death: {(ProtectDeathDrop ? "on" : "off")}");
+        }
+
         /// <summary>True when the player is explicitly on the list, regardless of <see cref="AllowEveryone"/>.</summary>
         public bool IsListed(Photon.Realtime.Player player)
         {
@@ -87,7 +121,7 @@ namespace BackpackPermission.Permissions
         }
 
         /// <summary>Snapshot of the current state as the rule other clients evaluate.</summary>
-        public AccessRule ToRule() => new AccessRule(AllowEveryone, UnlockWhilePassedOut, _allowed);
+        public AccessRule ToRule() => new AccessRule(AllowEveryone, UnlockWhilePassedOut, _allowed, ProtectDroppedPack, ProtectDeathDrop);
 
         private void Load()
         {

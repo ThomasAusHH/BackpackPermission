@@ -24,6 +24,15 @@ namespace BackpackPermission.Localization
         public static string Players => Pick("Players", "Mitspieler");
         public static string NoOtherPlayers => Pick("No other players in the lobby", "Keine anderen Spieler in der Runde");
 
+        // Dropped packs
+        public static string DroppedPack => Pick("Dropped pack", "Abgelegter Rucksack");
+        public static string AfterDeath => Pick("After death", "Nach dem Tod");
+        public static string Everyone => Pick("Everyone", "Alle");
+        public static string MyList => Pick("My list", "Meine Liste");
+        public static string TeamOnly => Pick("Team only", "Nur Team");
+
+        public static string SetTo(string label, string value) => Pick($"{label}: {value}", $"{label}: {value}");
+
         // Lobby mode and teams
         public static string LobbyMode => Pick("Lobby mode", "Lobby-Modus");
         public static string ModeIndividual => Pick("Individual", "Jeder für sich");

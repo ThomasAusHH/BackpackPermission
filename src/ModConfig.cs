@@ -10,6 +10,8 @@ namespace BackpackPermission
     internal sealed class ModConfig
     {
         private readonly ConfigEntry<bool> _unlockWhilePassedOut;
+        private readonly ConfigEntry<bool> _protectDroppedPack;
+        private readonly ConfigEntry<bool> _protectDeathDrop;
         private readonly ConfigEntry<bool> _rememberAllowedPlayers;
         private readonly ConfigEntry<Language> _language;
         private readonly ConfigEntry<float> _panelOffsetX;
@@ -21,6 +23,8 @@ namespace BackpackPermission
         private readonly ConfigEntry<string> _hostTeams;
         private readonly ConfigEntry<bool> _hostUnlockWhilePassedOut;
         private readonly ConfigEntry<bool> _hostAllowEveryone;
+        private readonly ConfigEntry<bool> _hostDroppedPacksTeamOnly;
+        private readonly ConfigEntry<bool> _hostDeathDropsTeamOnly;
         private readonly ConfigEntry<bool> _verbose;
 
         public ModConfig(ConfigFile file)
@@ -28,6 +32,10 @@ namespace BackpackPermission
             _unlockWhilePassedOut = file.Bind("General", "UnlockWhilePassedOut", true,
                 "While you are passed out on the ground, everyone may access your backpack (for example to help you). " +
                 "Can also be toggled inside the backpack wheel.");
+            _protectDroppedPack = file.Bind("General", "ProtectDroppedPack", true,
+                "Your permission list keeps applying to your pack after you put it down. Off = anyone may open a pack you dropped.");
+            _protectDeathDrop = file.Bind("General", "ProtectPackAfterDeath", false,
+                "Your permission list keeps applying to your pack after you died. Off = anyone may loot it, as in the base game.");
             _rememberAllowedPlayers = file.Bind("General", "RememberAllowedPlayers", true,
                 "Remember allowed players and host team assignments by Steam ID so they apply again in the next session.");
             _language = file.Bind("General", "Language", Language.English,
@@ -53,6 +61,10 @@ namespace BackpackPermission
                 "Host controlled lobbies: everyone may access the pack of a passed out player.");
             _hostAllowEveryone = file.Bind("Host", "AllowEveryone", false,
                 "Host controlled lobbies: everyone may access every pack.");
+            _hostDroppedPacksTeamOnly = file.Bind("Host", "DroppedPacksTeamOnly", true,
+                "Host controlled lobbies: a pack a player put down stays restricted to that player's team.");
+            _hostDeathDropsTeamOnly = file.Bind("Host", "DeathDropsTeamOnly", false,
+                "Host controlled lobbies: a pack dropped on death stays restricted to that player's team. Off = anyone may loot it.");
 
             _verbose = file.Bind("Debug", "Verbose", false, "Verbose logging, including a UI hierarchy dump.");
         }
@@ -61,6 +73,18 @@ namespace BackpackPermission
         {
             get => _unlockWhilePassedOut.Value;
             set => _unlockWhilePassedOut.Value = value;
+        }
+
+        public bool ProtectDroppedPack
+        {
+            get => _protectDroppedPack.Value;
+            set => _protectDroppedPack.Value = value;
+        }
+
+        public bool ProtectDeathDrop
+        {
+            get => _protectDeathDrop.Value;
+            set => _protectDeathDrop.Value = value;
         }
 
         public bool RememberAllowedPlayers => _rememberAllowedPlayers.Value;
@@ -107,6 +131,18 @@ namespace BackpackPermission
         {
             get => _hostAllowEveryone.Value;
             set => _hostAllowEveryone.Value = value;
+        }
+
+        public bool HostDroppedPacksTeamOnly
+        {
+            get => _hostDroppedPacksTeamOnly.Value;
+            set => _hostDroppedPacksTeamOnly.Value = value;
+        }
+
+        public bool HostDeathDropsTeamOnly
+        {
+            get => _hostDeathDropsTeamOnly.Value;
+            set => _hostDeathDropsTeamOnly.Value = value;
         }
 
         public bool Verbose => _verbose.Value;
