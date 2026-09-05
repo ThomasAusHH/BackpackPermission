@@ -1,0 +1,9 @@
+{
+  "name": "BackpackPermission",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/ThomasAusHH/BackpackPermission",
+  "description": "Lock your backpack. Choose which players may take items from or stash items into the pack on your back. Default: nobody.",
+  "dependencies": [
+    "BepInEx-BepInExPack_PEAK-5.4.75301"
+  ]
+}

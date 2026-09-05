@@ -1,0 +1,17 @@
+# Build output
+src/bin/
+src/obj/
+
+# Game, Unity, Photon and BepInEx assemblies (copyrighted, see README "Building")
+libs/
+
+# Decompiler, publicizer and their output (decompiled game code)
+.tools/
+
+# IDE
+.vs/
+.idea/
+*.user
+
+# Release material (zip, store texts) stays local
+release/

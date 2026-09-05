@@ -1,0 +1,98 @@
+# BackpackPermission
+
+A BepInEx mod for **PEAK**. You decide who may open the backpack, fannypack, jetpack or
+rocketpack on your back. **Default: nobody.** Other players can neither take items out nor
+put items in, and they cannot light your rocketpack.
+
+![Backpack Access panel next to the backpack wheel](docs/images/panel.png)
+
+## How it works
+
+1. Drop your backpack and open it as usual.
+2. A **Backpack Access** panel appears next to the wheel, styled like the hotbar, listing
+   every player in the lobby.
+3. Keep the interact key held and **click** a row. It toggles between *Allowed* and *Locked*
+   right away, so you can set up the whole lobby in one go.
+4. Release the key and put the backpack back on. Done.
+
+Extra rows in the panel:
+
+| Row | Effect |
+|---|---|
+| Allow everyone | Everyone may access your pack. Individual permissions are kept. |
+| Unlock while passed out | While you are passed out, everyone may access your pack so they can help you. On by default. |
+
+Locked players see **Locked** instead of *Open* when looking at your back and get no hold
+bar. Permissions are remembered by Steam ID and apply again in your next session.
+
+![Locked prompt on a teammate's backpack](docs/images/locked-prompt.png)
+
+## Multiplayer
+
+Your rule is published as a Photon player property. Every client, including late joiners,
+knows it immediately. No custom RPCs, no extra network traffic.
+
+| Who has the mod | Result |
+|---|---|
+| Only you, and you are the host | Taking items is blocked: as host you deny every unauthorized pickup yourself. Stashing and lighting by players without the mod cannot be blocked. |
+| Only you, someone else hosts | No protection. Nobody evaluates your rule. |
+| You and the host | Taking items is blocked reliably: the host denies the pickup. Stashing and lighting by players without the mod cannot be blocked. |
+| Everyone | Full protection: no taking, no stashing, no lighting. |
+
+Players without the mod behave like vanilla towards you: their packs stay open. Dropped
+backpacks on the ground are open to everyone, as in the base game. Only the pack on your
+back is protected. When you die the pack drops anyway.
+
+## Installation
+
+Install with [r2modman](https://thunderstore.io/c/peak/p/ebkr/r2modman/) or the Thunderstore
+app, or manually: copy `BackpackPermission.dll` into `BepInEx/plugins/`. Requires
+[BepInExPack PEAK](https://thunderstore.io/c/peak/p/BepInEx/BepInExPack_PEAK/).
+
+## Configuration
+
+`BepInEx/config/com.peakcode.backpackpermission.cfg`
+
+| Section | Key | Default | Meaning |
+|---|---|---|---|
+| General | UnlockWhilePassedOut | true | Everyone may access your pack while you are passed out. |
+| General | RememberAllowedPlayers | true | Remember allowed players by Steam ID across sessions. |
+| General | Language | English | English, Deutsch, or Auto (follows the game language). |
+| UI | PanelOffsetX | 340 | Distance of the panel from the wheel center. |
+| UI | PanelWidth | 380 | Panel width. |
+| UI | PanelScale | 1.0 | Panel scale. |
+| Saved | AllowedPlayers | empty | Managed by the mod. |
+| Saved | AllowEveryone | false | Managed by the mod. |
+| Debug | Verbose | false | Verbose logging including a UI hierarchy dump. |
+
+## Known limitations
+
+- The panel is mouse only. Gamepad wheel navigation does not reach the rows.
+
+## Building
+
+The repository does not contain game assemblies. Create `libs/` next to `src/` and copy these
+DLLs from `PEAK/PEAK_Data/Managed/` and `PEAK/BepInEx/core/`:
+
+```
+0Harmony.dll  BepInEx.dll  Photon3Unity3D.dll  PhotonRealtime.dll  PhotonUnityNetworking.dll
+Unity.TextMeshPro.dll  Unity.InputSystem.dll  UnityEngine.dll  UnityEngine.CoreModule.dll
+UnityEngine.UI.dll  UnityEngine.UIModule.dll  UnityEngine.TextRenderingModule.dll
+UnityEngine.PhysicsModule.dll  UnityEngine.AnimationModule.dll  Zorro.Core.Runtime.dll
+Zorro.UI.Runtime.dll  Zorro.ControllerSupport.dll
+```
+
+Publicize `Assembly-CSharp.dll` (for example with
+[BepInEx.AssemblyPublicizer](https://github.com/BepInEx/BepInEx.AssemblyPublicizer)) and save
+it as `libs/Assembly-CSharp-publicized.dll`. Then:
+
+```bash
+dotnet build src/BackpackPermission.csproj -c Release
+```
+
+`./deploy.sh` builds and copies the DLL into the game's plugin folder. `./release.sh` builds
+the Thunderstore zip into `release/`.
+
+## License
+
+MIT

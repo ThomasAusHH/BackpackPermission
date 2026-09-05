@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>BackpackPermission</AssemblyName>
+    <RootNamespace>BackpackPermission</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Version>1.0.0</Version>
+    <Authors>PeakCode</Authors>
+    <Product>BackpackPermission</Product>
+    <Description>PEAK mod: decide who may open the backpack on your back.</Description>
+    <RepositoryUrl>https://github.com/ThomasAusHH/BackpackPermission</RepositoryUrl>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- All references are local assemblies in ../libs; nothing is restored from the network. -->
+    <RestorePackages>false</RestorePackages>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Game, Unity, Photon and BepInEx assemblies. See README "Building" for how to populate libs/. -->
+    <Reference Include="..\libs\*.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
