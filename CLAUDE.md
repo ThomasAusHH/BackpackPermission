@@ -104,7 +104,11 @@ Sichtbarkeit in der Original-DLL prüfen:
 ```
 
 Bekannt nicht-public: `Item.view` (protected, stattdessen `photonView`),
-`CharacterBackpackHandler.character` (private, stattdessen `GetComponent<Character>()`).
+`CharacterBackpackHandler.character` und `CharacterBackpackHandler.photonView` (private),
+`CharacterItems.photonView` (`private new`, verdeckt die öffentliche Basis-Eigenschaft von
+`MonoBehaviourPun`; stattdessen `GetComponent<PhotonView>()`). Vorsicht bei `photonView` generell:
+Prüfen, ob die Klasse ein eigenes Feld dieses Namens deklariert. `Character`, `Player`, `Item`
+haben nur ein eigenes `view`, dort ist `photonView` die öffentliche Basis-Eigenschaft.
 Unity-Exceptions landen nicht in `BepInEx/LogOutput.log` („Unable to start Unity log writer“),
 sondern in `%USERPROFILE%/AppData/LocalLow/LandCrab/PEAK/Player.log`.
 

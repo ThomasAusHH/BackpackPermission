@@ -56,8 +56,10 @@ namespace BackpackPermission.Patches
             GameObject spawned = SpawnTracker.Take();
             Backpack pack = spawned != null ? spawned.GetComponent<Backpack>() : null;
             PhotonView packView = pack != null ? pack.photonView : null;
-            // CharacterItems.character is public, but the character's PhotonView owner is what identifies the player.
-            Photon.Realtime.Player owner = items != null && items.photonView != null ? items.photonView.Owner : null;
+            // CharacterItems declares its own private "photonView" field that hides the public base property,
+            // so the view is fetched from the component instead of through the member.
+            PhotonView characterView = items != null ? items.GetComponent<PhotonView>() : null;
+            Photon.Realtime.Player owner = characterView != null ? characterView.Owner : null;
             if (packView == null || owner == null)
             {
                 return;
