@@ -16,6 +16,7 @@ namespace BackpackPermission.Patches
         [HarmonyPatch(nameof(BackpackWheel.InitWheel))]
         private static void InitWheel_Postfix(BackpackWheel __instance, BackpackReference bp)
         {
+            StandalonePanel.Close();
             if (IsSomeoneElsesPack(bp))
             {
                 PermissionPanel.HideIfOpen();
@@ -65,13 +66,29 @@ namespace BackpackPermission.Patches
         }
     }
 
-    /// <summary>Hides the access panel together with the wheel.</summary>
-    [HarmonyPatch(typeof(GUIManager), nameof(GUIManager.CloseBackpackWheel))]
+    [HarmonyPatch(typeof(GUIManager))]
     internal static class GuiManagerPatches
     {
-        private static void Postfix()
+        /// <summary>Hides the access panel together with the wheel.</summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(GUIManager.CloseBackpackWheel))]
+        private static void CloseBackpackWheel_Postfix()
         {
             PermissionPanel.HideIfOpen();
+        }
+
+        /// <summary>
+        /// The standalone panel behaves like an open wheel: cursor unlocked, player input paused,
+        /// no other wheel can open on top of it.
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(GUIManager.wheelActive), MethodType.Getter)]
+        private static void WheelActive_Postfix(ref bool __result)
+        {
+            if (StandalonePanel.IsOpen)
+            {
+                __result = true;
+            }
         }
     }
 }

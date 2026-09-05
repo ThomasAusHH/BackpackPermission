@@ -122,6 +122,17 @@ Denied <Name> stashing into <Träger>'s backpack (host check), returning the ite
 | 10.10 | Rucksack aus einem Koffer, den noch niemand getragen hat. | Für alle offen, Panel zeigt beim Öffnen die eigene Liste. |
 | 10.11 | B öffnet A's abgelegten, aber freigegebenen Rucksack. | Kein Panel bei B (fremder Rucksack), Rad funktioniert normal. |
 
+## 11. Hotkey-Panel
+
+| # | Schritte | Erwartet |
+|---|---|---|
+| 11.1 | A ohne Rucksack drückt F7. | Panel erscheint mittig, Cursor frei, Bewegung und Item-Nutzung gesperrt. Unten „Press F7 to close“. |
+| 11.2 | A klickt Zeilen (Teams, Regeln). | Wirkung wie im Rad-Panel, Log-Zeilen identisch. |
+| 11.3 | F7 erneut. | Panel schließt, Cursor gesperrt, Steuerung wieder frei. |
+| 11.4 | Panel offen, A öffnet einen Rucksack. | Hotkey-Panel schließt sich, Rad-Panel übernimmt. |
+| 11.5 | `PanelHotkey = None` in der Config. | F7 tut nichts. |
+| 11.6 | F7 im Pausenmenü oder bei offenem Rad. | Panel öffnet sich nicht. |
+
 ## Was zu notieren ist
 
 Bei jedem Fehlschlag: Nummer des Tests, wer Host war, und die Zeilen aus `LogOutput.log` und

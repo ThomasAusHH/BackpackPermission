@@ -63,6 +63,8 @@ namespace BackpackPermission.Localization
 
         public static string LockPlayer(string name) => Pick($"Lock {name}", $"{name} sperren");
 
+        public static string CloseHint(string key) => Pick($"Press {key} to close", $"{key} drücken zum Schließen");
+
         public static string FallbackPlayerName(int actorNumber) => Pick($"Player {actorNumber}", $"Spieler {actorNumber}");
 
         private static bool UseGerman

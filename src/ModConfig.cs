@@ -1,6 +1,7 @@
 using BackpackPermission.Localization;
 using BackpackPermission.Permissions;
 using BepInEx.Configuration;
+using UnityEngine.InputSystem;
 
 namespace BackpackPermission
 {
@@ -17,6 +18,7 @@ namespace BackpackPermission
         private readonly ConfigEntry<float> _panelOffsetX;
         private readonly ConfigEntry<float> _panelWidth;
         private readonly ConfigEntry<float> _panelScale;
+        private readonly ConfigEntry<Key> _panelHotkey;
         private readonly ConfigEntry<string> _allowedPlayers;
         private readonly ConfigEntry<bool> _allowEveryone;
         private readonly ConfigEntry<LobbyMode> _lobbyMode;
@@ -45,6 +47,9 @@ namespace BackpackPermission
                 "Horizontal distance of the access panel from the wheel center (UI pixels).");
             _panelWidth = file.Bind("UI", "PanelWidth", 380f, "Width of the access panel.");
             _panelScale = file.Bind("UI", "PanelScale", 1f, "Scale of the access panel.");
+            _panelHotkey = file.Bind("UI", "PanelHotkey", Key.F7,
+                "Key that opens the Backpack Access panel without a backpack, for example as host without a pack. " +
+                "Press again to close. None disables the hotkey.");
 
             _allowedPlayers = file.Bind("Saved", "AllowedPlayers", "",
                 "Managed by the mod: comma separated keys (u:<UserId>) of allowed players.");
@@ -96,6 +101,8 @@ namespace BackpackPermission
         public float PanelWidth => _panelWidth.Value;
 
         public float PanelScale => _panelScale.Value;
+
+        public Key PanelHotkey => _panelHotkey.Value;
 
         public string AllowedPlayers
         {

@@ -10,6 +10,8 @@ put anything in, or light your rocketpack. **Default: nobody is allowed.**
 
 - **Per-player permissions** right inside the backpack wheel. Drop your pack, open it and click
   the player rows. Each click toggles between *Allowed* and *Locked* while the wheel stays open.
+- **Hotkey.** Press F7 (configurable) to open the panel without a backpack, for example as host
+  without a pack.
 - **Native look.** The panel is built from the game's own hotbar style and font.
 - **Four situations, one answer each.** *Worn pack*, *While passed out*, *Dropped pack* and
   *After death* are each either *My list* or *Everyone*. By default your pack is yours, but
@@ -47,7 +49,7 @@ For the full experience every player in the lobby should install the mod.
 
 - `UnlockWhilePassedOut` (true), `ProtectDroppedPack` (true), `ProtectPackAfterDeath` (false), `RememberAllowedPlayers` (true), `Language` (English / Deutsch / Auto)
 - `[Host] LobbyMode` (Individual / HostControlled), host-wide `AllowEveryone`, `UnlockWhilePassedOut`, `DroppedPacksTeamOnly`, `DeathDropsTeamOnly`
-- `PanelOffsetX`, `PanelWidth`, `PanelScale` to move or resize the panel
+- `PanelOffsetX`, `PanelWidth`, `PanelScale` to move or resize the panel, `PanelHotkey` (F7)
 - `Verbose` for detailed logging
 
 ## Known limitations

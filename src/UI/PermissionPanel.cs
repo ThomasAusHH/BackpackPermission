@@ -37,6 +37,7 @@ namespace BackpackPermission.UI
         private readonly List<GameObject> _content = new List<GameObject>();
         private BackpackWheel _wheel;
         private RectTransform _rect;
+        private bool _centered;
         private float _width;
         private float _inner;
 
@@ -110,6 +111,35 @@ namespace BackpackPermission.UI
             }
         }
 
+        /// <summary>Shows the panel centred on screen, without a wheel. Used by the hotkey.</summary>
+        public void ShowCentered()
+        {
+            _centered = true;
+            Rebuild();
+            gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Creates a panel under <paramref name="parent"/>. <paramref name="wheel"/> may be null for a
+        /// standalone panel; it is only used for the hover caption.
+        /// </summary>
+        public static PermissionPanel Create(Transform parent, BackpackWheel wheel, string name)
+        {
+            // No background of its own: the wheel (or the darkened HUD) already provides contrast.
+            GameObject go = new GameObject(name, typeof(RectTransform), typeof(PermissionPanel));
+            go.transform.SetParent(parent, false);
+            go.AddComponent<LayoutElement>().ignoreLayout = true;
+
+            PermissionPanel panel = go.GetComponent<PermissionPanel>();
+            panel._wheel = wheel;
+            panel._rect = go.GetComponent<RectTransform>();
+            panel._rect.anchorMin = new Vector2(0.5f, 0.5f);
+            panel._rect.anchorMax = new Vector2(0.5f, 0.5f);
+            panel._rect.pivot = new Vector2(0f, 0.5f);
+            go.SetActive(false);
+            return panel;
+        }
+
         private static PermissionPanel GetOrCreate(BackpackWheel wheel)
         {
             if (Instance != null && Instance._wheel == wheel)
@@ -120,21 +150,8 @@ namespace BackpackPermission.UI
             {
                 Destroy(Instance.gameObject);
             }
-
-            // No background of its own: the wheel already dims the whole screen.
-            GameObject go = new GameObject("BackpackPermissionPanel", typeof(RectTransform), typeof(PermissionPanel));
-            go.transform.SetParent(wheel.transform, false);
-            go.AddComponent<LayoutElement>().ignoreLayout = true;
-
-            PermissionPanel panel = go.GetComponent<PermissionPanel>();
-            panel._wheel = wheel;
-            panel._rect = go.GetComponent<RectTransform>();
-            panel._rect.anchorMin = new Vector2(0.5f, 0.5f);
-            panel._rect.anchorMax = new Vector2(0.5f, 0.5f);
-            panel._rect.pivot = new Vector2(0f, 0.5f);
-
-            Instance = panel;
-            return panel;
+            Instance = Create(wheel.transform, wheel, "BackpackPermissionPanel");
+            return Instance;
         }
 
         // ------------------------------------------------------------------
@@ -176,8 +193,14 @@ namespace BackpackPermission.UI
                 y = BuildIndividualView(y, hostRuleKnown);
             }
 
+            if (_wheel == null)
+            {
+                y -= SectionGap;
+                y -= AddLabel(Strings.CloseHint(Plugin.Settings.PanelHotkey.ToString()), 15f, y, 0.7f);
+            }
+
             _rect.sizeDelta = new Vector2(_width, -y);
-            _rect.anchoredPosition = new Vector2(Plugin.Settings.PanelOffsetX, 0f);
+            _rect.anchoredPosition = new Vector2(_centered ? -_width / 2f : Plugin.Settings.PanelOffsetX, 0f);
             transform.localScale = Vector3.one * Mathf.Max(0.3f, Plugin.Settings.PanelScale);
         }
 

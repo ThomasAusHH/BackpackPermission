@@ -33,6 +33,7 @@ dürfen. Standard: niemand. Details zur Bedienung und zum Multiplayer-Verhalten 
 | `src/Patches/BackpackStashPatches.cs` | Client-seitig `StashInBackpack` blocken |
 | `src/Patches/StashRollbackPatches.cs` | Master: `RPCAddItemToCharacterBackpack` / `Backpack.RPCAddItemToBackpack` bei Verbot überspringen, Ziel-Pack an Others re-syncen (`SyncInventoryRPC` bzw. `SetItemInstanceDataRPC`), Item vor dem Ablegenden neu spawnen |
 | `src/UI/PermissionPanel.cs` | MonoBehaviour unter `BackpackWheel.transform`, drei Ansichten: eigene Liste, Host-Team-Editor, Team-Übersicht (read-only); `Instance`, `HoveredRow`, `ShowFor`/`HideIfOpen` |
+| `src/UI/StandalonePanel.cs` | Hotkey-Panel ohne Rad (Config `PanelHotkey`, Unity-InputSystem `Keyboard.current`), hängt unter der HUD-Ebene (`backpackWheel.transform.parent`); `GUIManager.wheelActive`-Getter wird auf true gepatcht, damit Cursor frei und Eingaben gesperrt sind |
 | `src/UI/PermissionRow.cs` | Klickbare Zeile (Pointer-Events, Highlight, Caption im Radtext). Klick ist sicher: bei offenem Rad ist `CanDoInput()` false und `CharacterInput` liest keine Item-Eingaben |
 | `src/UI/HudStyle.cs` | Vanilla-Look: Radtext-Schrift/-Farbe, Kontur-Sprite `UI_Blur_Outlne` neu gesliced und auf Zeilenhöhe skaliert |
 | `src/UI/UiHierarchyDump.cs` | Debug-Dump von Rad und Hotbar ins Log (`Verbose=true`) |

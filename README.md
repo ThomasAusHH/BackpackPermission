@@ -15,6 +15,9 @@ put items in, and they cannot light your rocketpack.
    right away, so you can set up the whole lobby in one go.
 4. Release the key and put the backpack back on. Done.
 
+No backpack at hand? Press **F7** (configurable) to open the same panel anywhere. Press again to
+close. Hosts without a pack manage the lobby this way.
+
 Extra rows in the panel:
 
 Four rows decide who may access your pack in which situation, each either **My list** or
@@ -87,6 +90,7 @@ app, or manually: copy `BackpackPermission.dll` into `BepInEx/plugins/`. Require
 | UI | PanelOffsetX | 340 | Distance of the panel from the wheel center. |
 | UI | PanelWidth | 380 | Panel width. |
 | UI | PanelScale | 1.0 | Panel scale. |
+| UI | PanelHotkey | F7 | Opens the panel without a backpack. None disables. |
 | Saved | AllowedPlayers | empty | Managed by the mod. |
 | Saved | AllowEveryone | false | Managed by the mod. |
 | Host | LobbyMode | Individual | Applies when you host: Individual or HostControlled. Toggle in the wheel. |

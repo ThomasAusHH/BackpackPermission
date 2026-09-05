@@ -1,4 +1,5 @@
 using BackpackPermission.Permissions;
+using BackpackPermission.UI;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -47,6 +48,7 @@ namespace BackpackPermission
             _ruleSync.Tick();
             _lobbySync.Tick();
             DroppedPacks.Tick();
+            StandalonePanel.Tick();
         }
 
         private void OnDestroy()

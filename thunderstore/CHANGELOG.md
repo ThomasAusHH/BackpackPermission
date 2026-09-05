@@ -16,6 +16,8 @@
   the mod. Previously only taking could be denied host-side.
 - The host tracks who dropped which pack and why, and shares it with the lobby. Protected packs
   on the ground show "Locked", cannot be opened, stashed into or picked up by locked players.
+- **Hotkey.** F7 (configurable) opens the panel without a backpack, so hosts without a pack can
+  manage teams and everyone can edit their list at any time.
 - Team assignments are remembered by Steam ID.
 - Non-hosts see a read-only overview of the teams in their panel.
 - The lobby rule expires automatically when the host who set it leaves, so a new host without
