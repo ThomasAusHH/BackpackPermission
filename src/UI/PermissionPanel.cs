@@ -198,8 +198,8 @@ namespace BackpackPermission.UI
         /// <summary>Switches, dropped-pack rules and the player list of the individual view.</summary>
         private float BuildIndividualRows(float y, LocalPermissions permissions)
         {
-            y -= AddSwitchRow(Strings.AllowEveryone, permissions.AllowEveryone, permissions.ToggleAllowEveryone, y) + RowGap;
-            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, permissions.UnlockWhilePassedOut, permissions.ToggleUnlockWhilePassedOut, y) + RowGap;
+            y -= AddChoiceRow(Strings.WornPack, !permissions.AllowEveryone, Strings.MyList, Strings.Everyone, permissions.ToggleAllowEveryone, y) + RowGap;
+            y -= AddChoiceRow(Strings.WhilePassedOut, !permissions.UnlockWhilePassedOut, Strings.MyList, Strings.Everyone, permissions.ToggleUnlockWhilePassedOut, y) + RowGap;
             y -= AddChoiceRow(Strings.DroppedPack, permissions.ProtectDroppedPack, Strings.MyList, Strings.Everyone, permissions.ToggleProtectDroppedPack, y) + RowGap;
             y -= AddChoiceRow(Strings.AfterDeath, permissions.ProtectDeathDrop, Strings.MyList, Strings.Everyone, permissions.ToggleProtectDeathDrop, y) + SectionGap;
 
@@ -234,8 +234,8 @@ namespace BackpackPermission.UI
                 return BuildIndividualRows(y, Plugin.Permissions);
             }
 
-            y -= AddSwitchRow(Strings.AllowEveryone, host.AllowEveryone, host.ToggleAllowEveryone, y) + RowGap;
-            y -= AddSwitchRow(Strings.UnlockWhilePassedOut, host.UnlockWhilePassedOut, host.ToggleUnlockWhilePassedOut, y) + RowGap;
+            y -= AddChoiceRow(Strings.WornPack, !host.AllowEveryone, Strings.TeamOnly, Strings.Everyone, host.ToggleAllowEveryone, y) + RowGap;
+            y -= AddChoiceRow(Strings.WhilePassedOut, !host.UnlockWhilePassedOut, Strings.TeamOnly, Strings.Everyone, host.ToggleUnlockWhilePassedOut, y) + RowGap;
             y -= AddChoiceRow(Strings.DroppedPack, host.DroppedPacksTeamOnly, Strings.TeamOnly, Strings.Everyone, host.ToggleDroppedPacksTeamOnly, y) + RowGap;
             y -= AddChoiceRow(Strings.AfterDeath, host.DeathDropsTeamOnly, Strings.TeamOnly, Strings.Everyone, host.ToggleDeathDropsTeamOnly, y) + SectionGap;
             y -= AddLabel(Strings.Teams, 22f, y, 1f) + 8f;
@@ -256,10 +256,10 @@ namespace BackpackPermission.UI
         {
             y -= AddLabel(Strings.HostManagesHint, 16f, y, 0.75f) + 14f;
             y -= AddRow(Strings.LobbyMode, Strings.ModeHost, HudStyle.Green, null, null, y) + RowGap;
-            y -= AddRow(Strings.AllowEveryone, lobby.AllowEveryone ? Strings.On : Strings.Off, lobby.AllowEveryone ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
-            y -= AddRow(Strings.UnlockWhilePassedOut, lobby.UnlockWhilePassedOut ? Strings.On : Strings.Off, lobby.UnlockWhilePassedOut ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
-            y -= AddRow(Strings.DroppedPack, lobby.DroppedPacksTeamOnly ? Strings.TeamOnly : Strings.Everyone, lobby.DroppedPacksTeamOnly ? HudStyle.Green : HudStyle.Muted, null, null, y) + RowGap;
-            y -= AddRow(Strings.AfterDeath, lobby.DeathDropsTeamOnly ? Strings.TeamOnly : Strings.Everyone, lobby.DeathDropsTeamOnly ? HudStyle.Green : HudStyle.Muted, null, null, y) + SectionGap;
+            y -= AddReadOnlyChoiceRow(Strings.WornPack, !lobby.AllowEveryone, y) + RowGap;
+            y -= AddReadOnlyChoiceRow(Strings.WhilePassedOut, !lobby.UnlockWhilePassedOut, y) + RowGap;
+            y -= AddReadOnlyChoiceRow(Strings.DroppedPack, lobby.DroppedPacksTeamOnly, y) + RowGap;
+            y -= AddReadOnlyChoiceRow(Strings.AfterDeath, lobby.DeathDropsTeamOnly, y) + SectionGap;
 
             y -= AddLabel(Strings.YourTeam(LobbyRule.TeamName(lobby.TeamOf(PhotonNetwork.LocalPlayer))), 22f, y, 1f) + 8f;
 
@@ -271,10 +271,10 @@ namespace BackpackPermission.UI
             return y;
         }
 
-        private float AddSwitchRow(string label, bool isOn, Action toggle, float y)
+        /// <summary>Read-only "Team only" / "Everyone" row for the team overview.</summary>
+        private float AddReadOnlyChoiceRow(string label, bool teamOnly, float y)
         {
-            return AddRow(label, isOn ? Strings.On : Strings.Off, isOn ? HudStyle.Green : HudStyle.Muted,
-                Strings.Toggle(label, !isOn), toggle, y);
+            return AddRow(label, teamOnly ? Strings.TeamOnly : Strings.Everyone, teamOnly ? HudStyle.Green : HudStyle.Muted, null, null, y);
         }
 
         /// <summary>A two-state row whose status reads as a choice ("Team only" / "Everyone") rather than On/Off.</summary>

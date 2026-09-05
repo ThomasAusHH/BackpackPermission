@@ -17,12 +17,15 @@ put items in, and they cannot light your rocketpack.
 
 Extra rows in the panel:
 
-| Row | Effect |
-|---|---|
-| Allow everyone | Everyone may access your pack. Individual permissions are kept. |
-| Unlock while passed out | While you are passed out, everyone may access your pack so they can help you. On by default. |
-| Dropped pack | *My list*: your permissions keep applying after you put the pack down. *Everyone*: anyone may open it. Default: My list. |
-| After death | *My list*: your permissions keep applying to the pack you dropped when you died. *Everyone*: anyone may loot it, as in the base game. Default: Everyone. |
+Four rows decide who may access your pack in which situation, each either **My list** or
+**Everyone**:
+
+| Row | Meaning | Default |
+|---|---|---|
+| Worn pack | The pack on your back. | My list |
+| While passed out | Your pack while you lie passed out, so friends can help you. | Everyone |
+| Dropped pack | The pack after you put it down. | My list |
+| After death | The pack you dropped when you died. | Everyone |
 
 Locked players see **Locked** instead of *Open* when looking at your back and get no hold
 bar. Permissions are remembered by Steam ID and apply again in your next session.
@@ -35,9 +38,9 @@ The host can take over: open your own pack as host and switch **Lobby mode** to 
 
 - Click a player row to move them through **Team A, B, C, D** and back to *No team*.
 - Team mates may access each other's packs. Players without a team are locked for everyone.
-- Host-wide switches for *Allow everyone* and *Unlock while passed out*.
-- *Dropped pack* and *After death* decide whether packs on the ground stay **Team only** or are
-  open to **Everyone**. Defaults: dropped packs team only, death drops open.
+- The same four rows as in individual mode, *Worn pack*, *While passed out*, *Dropped pack* and
+  *After death*, now decide between **Team only** and **Everyone** for the whole lobby.
+  Defaults: worn and dropped packs team only, passed out and death drops open.
 - While host mode is active, the individual lists of all players are ignored. Everyone else
   sees a read-only overview of the teams. Switch back to *Individual* and the personal lists
   apply again.

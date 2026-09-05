@@ -11,18 +11,17 @@ put anything in, or light your rocketpack. **Default: nobody is allowed.**
 - **Per-player permissions** right inside the backpack wheel. Drop your pack, open it and click
   the player rows. Each click toggles between *Allowed* and *Locked* while the wheel stays open.
 - **Native look.** The panel is built from the game's own hotbar style and font.
-- **Allow everyone** switch for when you trust the whole lobby.
-- **Unlock while passed out** (on by default) so teammates can still grab that heart or
-  energy drink when you are down.
+- **Four situations, one answer each.** *Worn pack*, *While passed out*, *Dropped pack* and
+  *After death* are each either *My list* or *Everyone*. By default your pack is yours, but
+  friends can still grab that heart or energy drink when you are down or dead.
 - **Remembers your friends.** Permissions are stored by Steam ID and apply again next session.
 - **Host-side enforcement.** If the host runs the mod, unauthorized pickups are denied and
   unauthorized stashes are bounced back to the ground, even for players without the mod.
 - **Host mode.** The host can switch the lobby to *Host decides*, put players into teams A to D
   and let team mates share packs. Individual lists pause while host mode is on and return when
   the host switches back. Protects every player in the lobby, even those without the mod.
-- **Dropped packs.** Decide what happens to a pack on the ground: *Dropped pack* (you put it
-  down) and *After death* can each stay restricted to your list or your team, or be open to
-  everyone. Default: what you put down stays yours, what you drop on death can be rescued.
+- **Host mode rules.** In host mode the same four rows switch between *Team only* and
+  *Everyone* for the whole lobby.
 - **Vanilla behaviour for everyone else.** Packs of players without the mod stay open, dropped
   packs on the ground stay open, and a dead player's pack drops as usual.
 

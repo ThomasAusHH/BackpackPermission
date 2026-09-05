@@ -55,15 +55,15 @@ Denied <Name> stashing into <Träger>'s backpack (host check), returning the ite
 
 | # | Schritte | Erwartet |
 |---|---|---|
-| 4.1 | A schaltet „Allow everyone“ auf On. | Alle Zeilen zeigen „Allowed“ (gedämpft, wenn nicht einzeln freigegeben). B sieht „Open“. |
-| 4.2 | A schaltet „Allow everyone“ wieder auf Off. | Einzelfreigaben bleiben erhalten, alle anderen wieder „Locked“. |
+| 4.1 | A stellt „Worn pack“ auf „Everyone“. | Alle Zeilen zeigen „Allowed“ (gedämpft, wenn nicht einzeln freigegeben). B sieht „Open“. |
+| 4.2 | A stellt „Worn pack“ zurück auf „My list“. | Einzelfreigaben bleiben erhalten, alle anderen wieder „Locked“. |
 
 ## 5. Ohnmacht und Tod
 
 | # | Schritte | Erwartet |
 |---|---|---|
-| 5.1 | „Unlock while passed out“ = On. A wird ohnmächtig (z. B. Sturz), B ist gesperrt. | B sieht „Open“, kann Items nehmen. Sobald A wieder steht: „Locked“. |
-| 5.2 | „Unlock while passed out“ = Off, A ohnmächtig. | B bleibt gesperrt. |
+| 5.1 | „While passed out“ = Everyone. A wird ohnmächtig (z. B. Sturz), B ist gesperrt. | B sieht „Open“, kann Items nehmen. Sobald A wieder steht: „Locked“. |
+| 5.2 | „While passed out“ = My list, A ohnmächtig. | B bleibt gesperrt. |
 | 5.3 | A stirbt. | Rucksack fällt zu Boden, B kann ihn wie Vanilla öffnen. |
 
 ## 6. Spätjoiner und Persistenz
@@ -102,7 +102,7 @@ Denied <Name> stashing into <Träger>'s backpack (host check), returning the ite
 | 9.7 | B hatte A vorher in seiner eigenen Liste erlaubt; Host-Modus aktiv, verschiedene Teams. | A sieht trotzdem „Locked“ an B's Rücken: eigene Listen sind im Host-Modus inaktiv. |
 | 9.8 | A schaltet zurück auf „Individual“. | B's eigene Liste gilt wieder, A sieht „Open“ an B's Rücken (aus 9.7). |
 | 9.9 | C (ohne Mod) und A in Team A, B in Team B; C versucht bei B zu nehmen. | Item flackert, bleibt drin. Log bei A: `Denied C ... (host check)`. C bei A: erlaubt. |
-| 9.10 | „Allow everyone“ beim Host an. | Alle Rucksäcke offen, unabhängig von Teams. |
+| 9.10 | Host stellt „Worn pack“ auf „Everyone“. | Alle Rucksäcke offen, unabhängig von Teams. |
 | 9.11 | Neue Runde, gleiche Spieler, A hostet. | Teams stehen wieder wie zuvor (Steam-ID gemerkt). |
 | 9.12 | A verlässt die Runde, B wird Host (ohne die Regel zu ändern). | Panel bei allen zeigt wieder den individuellen Modus; die alte Host-Regel gilt nicht mehr. |
 

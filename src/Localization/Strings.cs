@@ -14,10 +14,8 @@ namespace BackpackPermission.Localization
     {
         public static string Title => Pick("Backpack Access", "Rucksack-Zugriff");
         public static string Hint => Pick("Click a row to toggle", "Zeile anklicken zum Umschalten");
-        public static string AllowEveryone => Pick("Allow everyone", "Alle erlauben");
-        public static string UnlockWhilePassedOut => Pick("Unlock while passed out", "Offen bei Ohnmacht");
-        public static string On => Pick("On", "An");
-        public static string Off => Pick("Off", "Aus");
+        public static string WornPack => Pick("Worn pack", "Getragener Rucksack");
+        public static string WhilePassedOut => Pick("While passed out", "Bei Ohnmacht");
         public static string Allowed => Pick("Allowed", "Erlaubt");
         public static string Locked => Pick("Locked", "Gesperrt");
         public static string LockedPrompt => Pick("Locked", "Gesperrt");
@@ -64,11 +62,6 @@ namespace BackpackPermission.Localization
         public static string AllowPlayer(string name) => Pick($"Allow {name}", $"{name} erlauben");
 
         public static string LockPlayer(string name) => Pick($"Lock {name}", $"{name} sperren");
-
-        public static string Toggle(string label, bool turnOn)
-        {
-            return Pick($"{label}: turn {(turnOn ? "on" : "off")}", $"{label}: {(turnOn ? "einschalten" : "ausschalten")}");
-        }
 
         public static string FallbackPlayerName(int actorNumber) => Pick($"Player {actorNumber}", $"Spieler {actorNumber}");
 
