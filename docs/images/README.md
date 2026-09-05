@@ -9,6 +9,10 @@ reference these exact file names:
 | `locked-prompt.png` | Looking at a teammate's backpack while locked: prompt shows **Locked** instead of Open. | README, Thunderstore, Nexus |
 | `hover.png` | Pointing at a player row, the row highlighted and the wheel text showing "Allow <name>". | Nexus (optional) |
 | `banner.png` | 1920x1080 hero shot for Nexus (panel plus backpack in frame). | Nexus header image |
+| `host-mode.png` | Host view with *Lobby mode: Host decides*, the four rules and the team list. | Nexus (optional) |
+
+`panel.png` should show the current 1.1 layout (the four rows Worn pack, While passed out,
+Dropped pack, After death above the player list).
 
 Tips: 1920x1080 or 2560x1440, PNG, no HUD overlays from other mods, English texts
 (`Language = English` in the config).

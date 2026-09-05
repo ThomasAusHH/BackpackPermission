@@ -6,11 +6,11 @@
   team (A to D). Team mates may access each other's packs, unassigned players are locked for
   everyone. Individual permission lists are ignored while host mode is active and come back as
   soon as the host switches to "Individual".
-- Host-wide switches for "Allow everyone" and "Unlock while passed out".
-- **Dropped packs.** New rules for packs lying on the ground: "Dropped pack" (put down by the
-  wearer) and "After death". Individually: *My list* or *Everyone*. In host mode: *Team only* or
-  *Everyone*. Defaults keep a pack you put down protected and leave death drops open, so a run
-  can still be rescued.
+- **Four situations, one answer each.** The panel now shows *Worn pack*, *While passed out*,
+  *Dropped pack* and *After death*, each either *My list* or *Everyone* (individual) or
+  *Team only* or *Everyone* (host mode). The former On/Off switches are part of these rows.
+  Defaults keep a worn or dropped pack protected and leave passed-out and death drops open, so a
+  run can still be rescued.
 - **Stash rollback.** Stashing into a locked pack is now undone by the host: the pack is
   re-synced and the item lands on the ground next to the stasher. Works against players without
   the mod. Previously only taking could be denied host-side.
