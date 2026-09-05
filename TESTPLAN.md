@@ -15,6 +15,7 @@ Dropped packs published: <ViewId>:<Actor>:<0|1>,...
 Denied <Name> taking an item from <Träger>'s backpack (host check).
 Blocked opening <Träger>'s backpack (local check).
 Blocked stashing into <Träger>'s backpack (local check).
+Denied <Name> stashing into <Träger>'s backpack (host check), returning the item.
 ```
 
 ## 1. Grundschutz (A und B haben die Mod, beliebiger Host)
@@ -35,7 +36,8 @@ Blocked stashing into <Träger>'s backpack (local check).
 | # | Schritte | Erwartet |
 |---|---|---|
 | 2.1 | C versucht ein Item aus A's Rucksack zu nehmen. | Bei C flackert das Item kurz, bleibt aber im Rucksack. Log bei A: `Denied C taking an item ... (host check)`. |
-| 2.2 | C legt ein Item in A's Rucksack. | Funktioniert wie Vanilla. Das ist die bekannte Grenze, siehe README. Nur notieren. |
+| 2.2 | C legt ein Item in A's Rucksack. | Bei C verschwindet das Item aus der Hand und liegt kurz darauf vor C's Füßen. A's Rucksack bleibt unverändert (A prüft durch Ablegen und Öffnen). Log bei A: `Denied C stashing into A's backpack (host check), returning the item.` |
+| 2.4 | C legt ein Item in A's **abgelegten**, geschützten Rucksack (Host-Modus, anderes Team, oder individuell „Dropped pack: My list“). | Gleiches Verhalten wie 2.2, Log: `Denied C stashing into a dropped pack`. |
 | 2.3 | Gleicher Test, aber **C ist Host** und A ist Client. | C kann Items nehmen. Bekannte Grenze: der Host hat keine Mod. |
 
 ## 3. Eigener Rucksack und Panel

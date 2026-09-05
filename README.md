@@ -54,9 +54,9 @@ knows it immediately. No custom RPCs, no extra network traffic.
 
 | Who has the mod | Result |
 |---|---|
-| Only you, and you are the host | Taking items is blocked: as host you deny every unauthorized pickup yourself. Stashing and lighting by players without the mod cannot be blocked. |
+| Only you, and you are the host | Taking and stashing are blocked: as host you deny pickups and bounce stashed items back to the ground next to the stasher. Lighting a rocketpack by players without the mod cannot be blocked. |
 | Only you, someone else hosts | No protection. Nobody evaluates your rule. |
-| You and the host | Taking items is blocked reliably: the host denies the pickup. Stashing and lighting by players without the mod cannot be blocked. |
+| You and the host | Taking and stashing are blocked by the host. Lighting a rocketpack by players without the mod cannot be blocked. |
 | Everyone | Full protection: no taking, no stashing, no lighting. |
 
 Players without the mod behave like vanilla towards you: their packs stay open. The host keeps

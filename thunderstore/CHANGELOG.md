@@ -11,6 +11,9 @@
   wearer) and "After death". Individually: *My list* or *Everyone*. In host mode: *Team only* or
   *Everyone*. Defaults keep a pack you put down protected and leave death drops open, so a run
   can still be rescued.
+- **Stash rollback.** Stashing into a locked pack is now undone by the host: the pack is
+  re-synced and the item lands on the ground next to the stasher. Works against players without
+  the mod. Previously only taking could be denied host-side.
 - The host tracks who dropped which pack and why, and shares it with the lobby. Protected packs
   on the ground show "Locked", cannot be opened, stashed into or picked up by locked players.
 - Team assignments are remembered by Steam ID.

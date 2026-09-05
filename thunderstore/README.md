@@ -15,8 +15,8 @@ put anything in, or light your rocketpack. **Default: nobody is allowed.**
 - **Unlock while passed out** (on by default) so teammates can still grab that heart or
   energy drink when you are down.
 - **Remembers your friends.** Permissions are stored by Steam ID and apply again next session.
-- **Host-side enforcement.** If the host runs the mod, unauthorized pickups are denied even for
-  players who do not have the mod installed.
+- **Host-side enforcement.** If the host runs the mod, unauthorized pickups are denied and
+  unauthorized stashes are bounced back to the ground, even for players without the mod.
 - **Host mode.** The host can switch the lobby to *Host decides*, put players into teams A to D
   and let team mates share packs. Individual lists pause while host mode is on and return when
   the host switches back. Protects every player in the lobby, even those without the mod.
@@ -33,9 +33,9 @@ RPCs are sent.
 
 | Who has the mod | Result |
 |---|---|
-| Only you, and you are the host | Taking items is blocked: as host you deny unauthorized pickups yourself. Stashing and lighting by players without the mod cannot be blocked. |
+| Only you, and you are the host | Taking and stashing are blocked: as host you deny pickups and bounce stashed items to the ground. Lighting a rocketpack by players without the mod cannot be blocked. |
 | Only you, someone else hosts | No protection. Nobody evaluates your rule. |
-| You and the host | Taking items is blocked. Stashing and lighting by players without the mod cannot be blocked. |
+| You and the host | Taking and stashing are blocked by the host. Lighting a rocketpack by players without the mod cannot be blocked. |
 | Everyone | Full protection. |
 
 For the full experience every player in the lobby should install the mod.

@@ -31,6 +31,7 @@ dürfen. Standard: niemand. Details zur Bedienung und zum Multiplayer-Verhalten 
 | `src/Patches/DropTrackingPatches.cs` | Master: `CharacterItems.DropItemRpc` (manuell) und `DropItemFromSlotRPC` (Tod/Wiederbelebung) mit Slot 3 → Registry; `SpawnTracker` merkt sich das zuletzt per `PhotonNetwork.InstantiateItemRoom` erzeugte Objekt |
 | `src/Patches/BackpackItemPatches.cs` | Bodenrucksack (`Backpack`): Prompt „Locked“, `Interact` und `Stash` client-seitig blocken |
 | `src/Patches/BackpackStashPatches.cs` | Client-seitig `StashInBackpack` blocken |
+| `src/Patches/StashRollbackPatches.cs` | Master: `RPCAddItemToCharacterBackpack` / `Backpack.RPCAddItemToBackpack` bei Verbot überspringen, Ziel-Pack an Others re-syncen (`SyncInventoryRPC` bzw. `SetItemInstanceDataRPC`), Item vor dem Ablegenden neu spawnen |
 | `src/UI/PermissionPanel.cs` | MonoBehaviour unter `BackpackWheel.transform`, drei Ansichten: eigene Liste, Host-Team-Editor, Team-Übersicht (read-only); `Instance`, `HoveredRow`, `ShowFor`/`HideIfOpen` |
 | `src/UI/PermissionRow.cs` | Klickbare Zeile (Pointer-Events, Highlight, Caption im Radtext). Klick ist sicher: bei offenem Rad ist `CanDoInput()` false und `CharacterInput` liest keine Item-Eingaben |
 | `src/UI/HudStyle.cs` | Vanilla-Look: Radtext-Schrift/-Farbe, Kontur-Sprite `UI_Blur_Outlne` neu gesliced und auf Zeilenhöhe skaliert |
@@ -74,8 +75,10 @@ Release: Version in `src/Plugin.cs` (`Version`), `src/BackpackPermission.csproj`
   der `Player.AddItem` prüft und mit `OnPickupAccepted` oder `DenyPickupRPC` antwortet. Deshalb
   kann der Host unerlaubte Entnahmen sicher ablehnen.
 - Hineinlegen: `CharacterBackpackHandler.StashInBackpack` sendet `RPCAddItemToCharacterBackpack`
-  an **alle** und leert den eigenen Slot lokal. Ein Ablehnen auf Empfängerseite würde
-  desyncen, deshalb wird nur auf der Seite des Nehmers geblockt.
+  an **alle** und leert den eigenen Slot lokal (Nicht-Master über `RPCRemoveItemFromSlot` an den Master,
+  der per `SyncInventoryRPC` verteilt; der Master ist Inventar-Autorität). Der Master kann den Stash
+  deshalb rückgängig machen: RPC lokal überspringen, Ziel-Pack an Others syncen, Item neu spawnen.
+  Beim Eintreffen des Stash-RPC hat der Master das Item noch im Slot des Ablegenden.
 - Der eigene Rucksack wird geöffnet, indem man ihn ablegt (Bodenitem, `BackpackReference.Item`).
   Deshalb erscheint das Panel bei jedem Rad mit Typ `Item` (oder `IsOnMyBack()`).
 - Beim Tod fällt der Rucksack zu Boden (`DropAllItems(includeBackpack: true)`), bei Ohnmacht
